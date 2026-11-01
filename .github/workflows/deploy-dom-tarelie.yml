@@ -89,6 +89,52 @@ jobs:
           echo "FTP_CONNECTED=yes"
           cat /tmp/tarelie-root-listing.txt
 
+      - name: Diagnose existing homepage and DNS (read-only)
+        if: env.MODE == 'plan'
+        shell: bash
+        run: |
+          set -euo pipefail
+          lftp -u "$FTP_USER","$FTP_PASSWORD" "ftp://$FTP_HOST:21" -e "
+            set cmd:fail-exit true;
+            set ftp:ssl-force true;
+            set ftp:ssl-protect-data true;
+            set ftp:passive-mode true;
+            set ssl:verify-certificate true;
+            set net:max-retries 2;
+            set net:timeout 25;
+            get index.html -o /tmp/tarelie-existing-index.html;
+            bye
+          "
+          python3 - <<'PY'
+          from pathlib import Path
+          from html import unescape
+          import hashlib, re, socket
+          f=Path('/tmp/tarelie-existing-index.html')
+          b=f.read_bytes()
+          t=b.decode('utf-8','replace')
+          match=re.search(r'<title[^>]*>(.*?)</title>',t,re.I|re.S)
+          title=unescape(re.sub(r'\\s+',' ',match.group(1))).strip()[:110] if match else '(no title)'
+          print('EXISTING_INDEX_BYTES=',len(b))
+          print('EXISTING_INDEX_SHA256=',hashlib.sha256(b).hexdigest())
+          print('EXISTING_INDEX_TITLE=',title)
+          for h in ['tarelie.ru','dom.tarelie.ru','server169.hosting.reg.ru']:
+              try:
+                  ips=sorted({x[4][0] for x in socket.getaddrinfo(h,None)})
+                  print('DNS',h, ','.join(ips))
+              except OSError as e:
+                  print('DNS',h,'NOT_RESOLVED')
+          PY
+          if curl --fail --location --silent --show-error --connect-timeout 8 --max-time 18 \
+            "https://dom.tarelie.ru/?preflight=${GITHUB_SHA}" -o /tmp/tarelie-http-existing.html; then
+              if cmp -s /tmp/tarelie-existing-index.html /tmp/tarelie-http-existing.html; then
+                echo 'DOMAIN_BINDING=confirmed_by_identical_HTTPS_and_FTP'
+              else
+                echo 'DOMAIN_BINDING=HTTPS_and_FTP_content_differ'
+              fi
+          else
+            echo 'DOMAIN_BINDING=HTTPS_not_ready'
+          fi
+
       - name: Plan only
         if: env.MODE == 'plan'
         shell: bash
