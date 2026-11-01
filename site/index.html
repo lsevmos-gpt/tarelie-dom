@@ -218,6 +218,8 @@ function init(){renderCatalog();renderCounters();renderCart();$('#year').textCon
 document.addEventListener('DOMContentLoaded',init);
 </script>
 <link rel="stylesheet" href="mobile.css?v=20261101" />
+<link rel="stylesheet" href="category-nav.css?v=20261101" />
+<script src="category-nav.js?v=20261101" defer></script>
 </head>
 <body>
 <a class="skip-link" href="#menu">Перейти к меню</a>
@@ -282,7 +284,7 @@ document.addEventListener('DOMContentLoaded',init);
 <span class="nutrition-intro-title">КБЖУ · ПРЕДВАРИТЕЛЬНЫЙ РАСЧЁТ</span>
 <span>Показатели приведены на 100 г по типовым рецептурам. После расчёта производителя мы заменим их точными значениями.</span>
 </div>
-<div aria-label="Категории меню" class="category-tabs" id="categoryTabs" role="group"></div>
+<div class="category-toolbar"><button class="category-launcher" id="categoryLauncher" type="button" aria-label="Открыть все разделы меню" aria-haspopup="dialog" aria-controls="categoryDialog" aria-expanded="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/></svg></button><div aria-label="Категории меню" class="category-tabs" id="categoryTabs" role="group"></div></div>
 <div id="catalogGroups"></div>
 <div class="menu-note">
 <svg aria-hidden="true" fill="none" height="20" stroke="currentColor" stroke-width="1.6" viewbox="0 0 24 24" width="20"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v6M12 7.1v.8" stroke-linecap="round"></path></svg>
@@ -349,6 +351,7 @@ document.addEventListener('DOMContentLoaded',init);
 <p class="checkout-disclaimer" id="checkoutGuidance">На телефоне текст заказа также копируется в буфер. Если открытый Telegram не подставит его, нажмите «Вставить» в поле сообщения. Отправка подтверждается вами в Telegram.</p>
 </div>
 </aside>
+<dialog id="categoryDialog" aria-labelledby="categoryDialogTitle"><div class="category-sheet"><div class="category-sheet-grip" aria-hidden="true"></div><div class="category-sheet-head"><div><p class="category-sheet-kicker">ТАРЕЛЬЕ · ДОМАШНЯЯ</p><h2 id="categoryDialogTitle">Разделы <em>меню</em></h2></div><button class="category-sheet-close" id="categoryClose" type="button" aria-label="Закрыть меню">×</button></div><div class="category-options" id="categoryOptions"></div><div class="category-sheet-footer">Выберите то, что хочется сегодня</div></div></dialog>
 <div aria-live="polite" class="toast" id="toast" role="status"></div>
 </body>
 </html>
