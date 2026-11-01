@@ -191,7 +191,28 @@ function init(){renderCatalog();renderCounters();renderCart();$('#year').textCon
  $('#closeCart').addEventListener('click',closeCart);$('#drawerBackdrop').addEventListener('click',closeCart);
  document.addEventListener('keydown',e=>{if(e.key==='Escape')closeCart();if(e.key==='Tab'&&$('#cartDrawer').classList.contains('open')){const focusables=Array.from($('#cartDrawer').querySelectorAll('a[href],button:not([disabled]),input,textarea'));const i=focusables.indexOf(document.activeElement);if(e.shiftKey&&i===0){focusables.at(-1).focus();e.preventDefault()}else if(!e.shiftKey&&i===focusables.length-1){focusables[0].focus();e.preventDefault()}}});
  $('#cartItems').addEventListener('click',e=>{if(e.target.id==='emptyCartGo'){closeCart();$('#menu').scrollIntoView({behavior:'smooth'});return;}const b=e.target.closest('[data-cart-change]');if(b)changeQty(b.dataset.cartId,Number(b.dataset.cartChange));});
- $('#sendTelegram').addEventListener('click',()=>{const msg=orderText();if(!msg){alertToast('Корзина пуста');return;}window.open(telegramLink(msg),'_blank','noopener,noreferrer');$('#checkoutGuidance').textContent='Проверьте текст и нажмите «Отправить» в Telegram. Ссылка на чат по номеру работает, если настройки конфиденциальности контакта позволяют его найти.';});
+ $('#sendTelegram').addEventListener('click',async()=>{
+ const msg=orderText();
+ if(!msg){alertToast('Корзина пуста');return;}
+ const link=telegramLink(msg);
+ const isMobile=/Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent) || (window.matchMedia('(pointer: coarse)').matches && window.innerWidth<=900);
+ if(!isMobile){
+   window.open(link,'_blank','noopener,noreferrer');
+   $('#checkoutGuidance').textContent='Проверьте подготовленный текст и нажмите «Отправить» в Telegram.';
+   return;
+ }
+ // Telegram mobile may ignore ?text= when it is already running.
+ // First save the exact order text to the clipboard; the direct chat link is still used.
+ const sendButton=$('#sendTelegram');
+ sendButton.disabled=true;
+ let copied=false;
+ try { copied=await copyText(msg); }
+ finally { sendButton.disabled=false; }
+ $('#checkoutGuidance').textContent=copied
+  ? 'Заказ скопирован. Если Telegram уже открыт и поле сообщения пустое, удерживайте поле ввода и нажмите «Вставить».'
+  : 'Если Telegram откроется без текста, вернитесь в корзину и нажмите «Скопировать текст заказа».';
+ window.location.assign(link);
+});
   $('#copyOrder').addEventListener('click',async()=>{const msg=orderText();if(!msg){alertToast('Корзина пуста');return;}const copied=await copyText(msg);alertToast(copied?'Состав заказа скопирован.':'Скопировать автоматически не удалось. Попробуйте открыть сайт через HTTPS.');});
 }
 document.addEventListener('DOMContentLoaded',init);
@@ -325,7 +346,7 @@ document.addEventListener('DOMContentLoaded',init);
 <p class="checkout-caption">Оформление через Telegram</p>
 <button class="checkout-btn telegram-btn" id="sendTelegram" type="button"><span class="checkout-telegram-label"><svg aria-hidden="true" fill="currentColor" height="19" viewbox="0 0 24 24" width="19"><path d="M21.8 3.8 18.5 20a1.2 1.2 0 0 1-1.8.8l-4.9-3.6-2.3 2.2a.8.8 0 0 1-1.4-.5l-.4-4.4 10-9-12.3 7.8-3.4-1.1a1.1 1.1 0 0 1 0-2.1L20.3 2a1.2 1.2 0 0 1 1.5 1.8Z"></path></svg> Отправить заказ в Telegram</span><span aria-hidden="true">↗</span></button>
 <div class="checkout-secondary"><button id="copyOrder" type="button">Скопировать текст заказа</button></div>
-<p class="checkout-disclaimer" id="checkoutGuidance">Текст заказа откроется в Telegram как черновик. Нажмите «Отправить», чтобы передать заявку.</p>
+<p class="checkout-disclaimer" id="checkoutGuidance">На телефоне текст заказа также копируется в буфер. Если открытый Telegram не подставит его, нажмите «Вставить» в поле сообщения. Отправка подтверждается вами в Telegram.</p>
 </div>
 </aside>
 <div aria-live="polite" class="toast" id="toast" role="status"></div>
