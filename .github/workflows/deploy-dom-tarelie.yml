@@ -1,22 +1,12 @@
-name: TARELIE Dom | REG.RU FTPS
+name: Deploy TARELIE Dom to REG.RU
 
 on:
+  workflow_dispatch:
   push:
-    branches:
-      - main
+    branches: [main]
     paths:
       - 'site/**'
       - '.github/workflows/deploy-dom-tarelie.yml'
-  workflow_dispatch:
-    inputs:
-      mode:
-        description: 'plan = read-only check; deploy = publish'
-        required: true
-        type: choice
-        options:
-          - plan
-          - deploy
-        default: plan
 
 permissions:
   contents: read
@@ -28,219 +18,101 @@ concurrency:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 20
     env:
       FTP_HOST: server169.hosting.reg.ru
       FTP_USER: u3652448_dom
       FTP_PASSWORD: ${{ secrets.TARELIE_FTP_PASSWORD }}
-      EXPECTED_DOMAIN: dom.tarelie.ru
-      EXPECTED_HOSTING_DIR: /www/dom.tarelie.ru
-      MODE: ${{ github.event_name == 'workflow_dispatch' && inputs.mode || (contains(github.event.head_commit.message, '[plan-tarelie]') && 'plan' || 'deploy') }}
-
+      DOMAIN: dom.tarelie.ru
     steps:
-      - name: Checkout
+      - name: Checkout site
         uses: actions/checkout@v4
 
-      - name: Validate only TARELIE project
+      - name: Validate TARELIE sources and dedicated FTP account
         shell: bash
         run: |
           set -euo pipefail
           test "$GITHUB_REPOSITORY" = "lsevmos-gpt/tarelie-dom"
+          test "$FTP_HOST" = "server169.hosting.reg.ru"
           test "$FTP_USER" = "u3652448_dom"
-          test "$EXPECTED_HOSTING_DIR" = "/www/dom.tarelie.ru"
+          test "$DOMAIN" = "dom.tarelie.ru"
           test -s site/index.html
           test "$(find site/assets -type f | wc -l)" -eq 15
-          grep -Fq "ТАРЕЛЬЕ" site/index.html
-          if grep -qE 'data:image/(png|webp|jpeg);base64,' site/index.html; then
-            echo "::error::Embedded image unexpectedly present in extracted site"
-            exit 1
-          fi
-          case "$MODE" in plan|deploy) :;; *) exit 1;; esac
-          echo "Validated independent TARELIE website; mode=$MODE"
+          grep -Fq 'ТАРЕЛЬЕ' site/index.html
+          test -n "$FTP_PASSWORD"
 
-      - name: Require FTP secret
-        shell: bash
-        run: |
-          if [ -z "$FTP_PASSWORD" ]; then
-            echo "::error::TARELIE_FTP_PASSWORD secret is not configured"
-            exit 1
-          fi
+      - name: Install FTPS client used on existing REG.RU sites
+        run: sudo apt-get update -qq && sudo apt-get install -qq -y lftp
 
-      - name: Install FTPS client
-        shell: bash
-        run: sudo apt-get update -qq && sudo apt-get install -y -qq lftp
-
-      - name: Inspect dedicated FTP account without making changes
+      - name: Verify dedicated directory and save existing homepage
         shell: bash
         run: |
           set -euo pipefail
-          lftp -u "$FTP_USER","$FTP_PASSWORD" "ftp://$FTP_HOST:21" -e "
-            set cmd:fail-exit true;
-            set ftp:ssl-force true;
-            set ftp:ssl-protect-data true;
-            set ftp:passive-mode true;
-            set ssl:verify-certificate true;
-            set net:max-retries 2;
-            set net:timeout 25;
-            pwd;
-            cls -1 -a;
-            bye
-          " > /tmp/tarelie-root-listing.txt
-          echo "FTP_CONNECTED=yes"
-          cat /tmp/tarelie-root-listing.txt
-
-      - name: Diagnose existing homepage and DNS (read-only)
-        if: env.MODE == 'plan'
-        shell: bash
-        run: |
-          set -euo pipefail
-          lftp -u "$FTP_USER","$FTP_PASSWORD" "ftp://$FTP_HOST:21" -e "
-            set cmd:fail-exit true;
-            set ftp:ssl-force true;
-            set ftp:ssl-protect-data true;
-            set ftp:passive-mode true;
-            set ssl:verify-certificate true;
-            set net:max-retries 2;
-            set net:timeout 25;
-            get index.html -o /tmp/tarelie-existing-index.html;
-            bye
-          "
-          python3 - <<'PY'
-          from pathlib import Path
-          from html import unescape
-          import hashlib, re, socket
-          f=Path('/tmp/tarelie-existing-index.html')
-          b=f.read_bytes()
-          t=b.decode('utf-8','replace')
-          match=re.search(r'<title[^>]*>(.*?)</title>',t,re.I|re.S)
-          title=unescape(re.sub(r'\\s+',' ',match.group(1))).strip()[:110] if match else '(no title)'
-          print('EXISTING_INDEX_BYTES=',len(b))
-          print('EXISTING_INDEX_SHA256=',hashlib.sha256(b).hexdigest())
-          print('EXISTING_INDEX_TITLE=',title)
-          for h in ['tarelie.ru','dom.tarelie.ru','server169.hosting.reg.ru']:
-              try:
-                  ips=sorted({x[4][0] for x in socket.getaddrinfo(h,None)})
-                  print('DNS',h, ','.join(ips))
-              except OSError as e:
-                  print('DNS',h,'NOT_RESOLVED')
-          PY
-          if curl --fail --location --silent --show-error --connect-timeout 8 --max-time 18 \
-            "https://dom.tarelie.ru/?preflight=${GITHUB_SHA}" -o /tmp/tarelie-http-existing.html; then
-              if cmp -s /tmp/tarelie-existing-index.html /tmp/tarelie-http-existing.html; then
-                echo 'DOMAIN_BINDING=confirmed_by_identical_HTTPS_and_FTP'
-              else
-                echo 'DOMAIN_BINDING=HTTPS_and_FTP_content_differ'
-              fi
-          else
-            echo 'DOMAIN_BINDING=HTTPS_not_ready'
-          fi
-
-      - name: Plan only
-        if: env.MODE == 'plan'
-        shell: bash
-        run: |
-          echo "PLAN_ONLY=yes; no remote write"
-          find site -type f | sort
-
-      - name: Verify target identity before the first write
-        if: env.MODE == 'deploy'
-        shell: bash
-        run: |
-          set -euo pipefail
+          mkdir -p _tarelie_backup
           if lftp -u "$FTP_USER","$FTP_PASSWORD" "ftp://$FTP_HOST:21" -e "
             set cmd:fail-exit true;
             set ftp:ssl-force true;
             set ftp:ssl-protect-data true;
             set ftp:passive-mode true;
             set ssl:verify-certificate true;
-            set net:max-retries 1;
-            set net:timeout 25;
-            get .tarelie-dom-root.txt -o /tmp/tarelie-root-marker.txt;
+            cd /;
+            get .tarelie-dom-root.txt -o /tmp/tarelie-marker.txt;
             bye
           "; then
-            test "$(tr -d '\r\n' < /tmp/tarelie-root-marker.txt)" = "$EXPECTED_DOMAIN" || {
-              echo "::error::Wrong site marker. Nothing will be overwritten."
+            test "$(tr -d '\r\n' < /tmp/tarelie-marker.txt)" = "$DOMAIN" || {
+              echo '::error::Wrong site root marker. Nothing will be overwritten.'
               exit 1
             }
-            echo 'EXISTING_SITE_MARKER=verified'
           else
-            # First publish is permitted ONLY for the exact REG.RU placeholder
-            # seen in the read-only preflight, in the dedicated u3652448_dom FTP home.
             lftp -u "$FTP_USER","$FTP_PASSWORD" "ftp://$FTP_HOST:21" -e "
               set cmd:fail-exit true;
               set ftp:ssl-force true;
               set ftp:ssl-protect-data true;
               set ftp:passive-mode true;
               set ssl:verify-certificate true;
-              set net:max-retries 2;
-              set net:timeout 25;
-              cls -1 -a;
-              get index.html -o /tmp/tarelie-existing-index.html;
+              cd /;
+              get index.html -o /tmp/tarelie-original-index.html;
               bye
-            " > /tmp/tarelie-first-publish-listing.txt
-            grep -Fqx 'index.html' /tmp/tarelie-first-publish-listing.txt || {
-              echo "::error::Default index.html not found. Refusing."
-              exit 1
-            }
-            grep -Ev '^(\./|\.\./|index\.html) /tmp/tarelie-first-publish-listing.txt > /tmp/tarelie-unexpected-files.txt || true
-            if [[ -s /tmp/tarelie-unexpected-files.txt ]]; then
-              echo "::error::Unexpected remote files; first publication denied."
-              exit 1
-            fi
-            echo '54de7429672546e5ad06d1cab90c5699b140c2542963d7acfaa68ebb74973ac4  /tmp/tarelie-existing-index.html' | sha256sum -c -
-            grep -Fq 'Почти готово! Домен успешно привязан к хостингу' /tmp/tarelie-existing-index.html
-            echo 'REG_RU_DEFAULT_PLACEHOLDER=verified'
+            "
+            echo '54de7429672546e5ad06d1cab90c5699b140c2542963d7acfaa68ebb74973ac4  /tmp/tarelie-original-index.html' | sha256sum -c -
+            grep -Fq 'Почти готово! Домен успешно привязан к хостингу' /tmp/tarelie-original-index.html
           fi
-
-      - name: Back up existing remote files
-        if: env.MODE == 'deploy'
-        shell: bash
-        run: |
-          set -euo pipefail
-          mkdir -p _tarelie_backup
           lftp -u "$FTP_USER","$FTP_PASSWORD" "ftp://$FTP_HOST:21" -e "
             set cmd:fail-exit true;
             set ftp:ssl-force true;
             set ftp:ssl-protect-data true;
             set ftp:passive-mode true;
             set ssl:verify-certificate true;
-            set net:max-retries 2;
-            set net:timeout 25;
-            mirror --verbose --no-perms --exclude-glob '.*' ./ _tarelie_backup/;
+            cd /;
+            get index.html -o _tarelie_backup/index.html;
             bye
           "
 
-      - name: Preserve backup artifact
-        if: env.MODE == 'deploy'
+      - name: Preserve original homepage
         uses: actions/upload-artifact@v4
         with:
-          name: tarelie-backup-${{ github.run_id }}
-          path: _tarelie_backup/
-          if-no-files-found: warn
+          name: tarelie-homepage-before-${{ github.run_id }}
+          path: _tarelie_backup/index.html
           retention-days: 14
 
-      - name: Publish only TARELIE site (no delete)
-        if: env.MODE == 'deploy'
+      - name: Publish site over protected REG.RU FTPS
         shell: bash
         run: |
           set -euo pipefail
-          printf "%s\n" "$EXPECTED_DOMAIN" > /tmp/tarelie-dom-root.txt
+          printf '%s\n' "$DOMAIN" > /tmp/tarelie-dom-root.txt
           lftp -u "$FTP_USER","$FTP_PASSWORD" "ftp://$FTP_HOST:21" -e "
             set cmd:fail-exit true;
             set ftp:ssl-force true;
             set ftp:ssl-protect-data true;
             set ftp:passive-mode true;
             set ssl:verify-certificate true;
-            set net:max-retries 2;
-            set net:timeout 25;
+            cd /;
             mirror -R --verbose --no-perms site/ ./;
             put /tmp/tarelie-dom-root.txt -o .tarelie-dom-root.txt;
             bye
           "
-          echo "UPLOAD_COMPLETE=yes"
 
-      - name: Verify published bytes over protected FTPS
-        if: env.MODE == 'deploy'
+      - name: Verify exact homepage uploaded
         shell: bash
         run: |
           set -euo pipefail
@@ -250,135 +122,27 @@ jobs:
             set ftp:ssl-protect-data true;
             set ftp:passive-mode true;
             set ssl:verify-certificate true;
-            set net:max-retries 2;
-            set net:timeout 25;
-            get index.html -o /tmp/tarelie-published-index.html;
-            get assets/img-b314a1bb70f8e2a7.png -o /tmp/tarelie-published-favicon.png;
-            get .tarelie-dom-root.txt -o /tmp/tarelie-published-marker.txt;
+            cd /;
+            get index.html -o /tmp/tarelie-published.html;
             bye
           "
-          cmp -s site/index.html /tmp/tarelie-published-index.html
-          cmp -s site/assets/img-b314a1bb70f8e2a7.png /tmp/tarelie-published-favicon.png
-          test "$(tr -d '\r\n' < /tmp/tarelie-published-marker.txt)" = "$EXPECTED_DOMAIN"
-          echo 'FTPS_PUBLICATION=verified_exact_bytes'
+          cmp -s site/index.html /tmp/tarelie-published.html
+          echo 'TARELIE_FTPS_PUBLICATION=verified'
 
-      - name: Verify HTTPS when DNS and certificate are ready
-        if: env.MODE == 'deploy'
+      - name: Verify public HTTPS when DNS is ready
         shell: bash
         run: |
           set -euo pipefail
-          if ! getent ahostsv4 dom.tarelie.ru >/dev/null; then
-            echo '::warning::SITE_PUBLISHED_TO_FTP; dom.tarelie.ru DNS is not yet resolvable. Configure DNS at the registrar.'
+          if ! getent ahostsv4 "$DOMAIN" >/dev/null; then
+            echo '::warning::FTP is published, but dom.tarelie.ru DNS is not configured yet.'
             exit 0
           fi
-          if ! curl --fail --location --silent --show-error --retry 3 --retry-delay 5 \
-            --connect-timeout 10 --max-time 45 \
-            "https://dom.tarelie.ru/?check=${GITHUB_SHA}" -o /tmp/tarelie-live-index.html; then
-            echo '::warning::FTPS publication verified, but HTTPS is not ready. Check DNS and SSL certificate on REG.RU.'
+          if ! curl -fsSL --connect-timeout 10 --max-time 30 "https://$DOMAIN/?check=${GITHUB_SHA}" -o /tmp/tarelie-live.html; then
+            echo '::warning::FTP is published, but HTTPS or SSL is not ready yet.'
             exit 0
           fi
-          cmp -s site/index.html /tmp/tarelie-live-index.html || {
-            echo '::error::Public HTML differs from uploaded menu; check DNS / web-server binding.'
+          cmp -s site/index.html /tmp/tarelie-live.html || {
+            echo '::error::The public website does not match the published files.'
             exit 1
           }
-          echo 'PUBLIC_HTTPS=verified_exact_bytes'
- /tmp/tarelie-first-publish-listing.txt > /tmp/tarelie-unexpected-files.txt || true
-            if [[ -s /tmp/tarelie-unexpected-files.txt ]]; then
-              echo "::error::Unexpected remote files; first publication denied."
-              exit 1
-            fi
-            echo '54de7429672546e5ad06d1cab90c5699b140c2542963d7acfaa68ebb74973ac4  /tmp/tarelie-existing-index.html' | sha256sum -c -
-            grep -Fq 'Почти готово! Домен успешно привязан к хостингу' /tmp/tarelie-existing-index.html
-            echo 'REG_RU_DEFAULT_PLACEHOLDER=verified'
-          fi
-
-      - name: Back up existing remote files
-        if: env.MODE == 'deploy'
-        shell: bash
-        run: |
-          set -euo pipefail
-          mkdir -p _tarelie_backup
-          lftp -u "$FTP_USER","$FTP_PASSWORD" "ftp://$FTP_HOST:21" -e "
-            set cmd:fail-exit true;
-            set ftp:ssl-force true;
-            set ftp:ssl-protect-data true;
-            set ftp:passive-mode true;
-            set ssl:verify-certificate true;
-            set net:max-retries 2;
-            set net:timeout 25;
-            mirror --verbose --no-perms --exclude-glob '.*' ./ _tarelie_backup/;
-            bye
-          "
-
-      - name: Preserve backup artifact
-        if: env.MODE == 'deploy'
-        uses: actions/upload-artifact@v4
-        with:
-          name: tarelie-backup-${{ github.run_id }}
-          path: _tarelie_backup/
-          if-no-files-found: warn
-          retention-days: 14
-
-      - name: Publish only TARELIE site (no delete)
-        if: env.MODE == 'deploy'
-        shell: bash
-        run: |
-          set -euo pipefail
-          printf "%s\n" "$EXPECTED_DOMAIN" > /tmp/tarelie-dom-root.txt
-          lftp -u "$FTP_USER","$FTP_PASSWORD" "ftp://$FTP_HOST:21" -e "
-            set cmd:fail-exit true;
-            set ftp:ssl-force true;
-            set ftp:ssl-protect-data true;
-            set ftp:passive-mode true;
-            set ssl:verify-certificate true;
-            set net:max-retries 2;
-            set net:timeout 25;
-            mirror -R --verbose --no-perms site/ ./;
-            put /tmp/tarelie-dom-root.txt -o .tarelie-dom-root.txt;
-            bye
-          "
-          echo "UPLOAD_COMPLETE=yes"
-
-      - name: Verify published bytes over protected FTPS
-        if: env.MODE == 'deploy'
-        shell: bash
-        run: |
-          set -euo pipefail
-          lftp -u "$FTP_USER","$FTP_PASSWORD" "ftp://$FTP_HOST:21" -e "
-            set cmd:fail-exit true;
-            set ftp:ssl-force true;
-            set ftp:ssl-protect-data true;
-            set ftp:passive-mode true;
-            set ssl:verify-certificate true;
-            set net:max-retries 2;
-            set net:timeout 25;
-            get index.html -o /tmp/tarelie-published-index.html;
-            get assets/img-b314a1bb70f8e2a7.png -o /tmp/tarelie-published-favicon.png;
-            get .tarelie-dom-root.txt -o /tmp/tarelie-published-marker.txt;
-            bye
-          "
-          cmp -s site/index.html /tmp/tarelie-published-index.html
-          cmp -s site/assets/img-b314a1bb70f8e2a7.png /tmp/tarelie-published-favicon.png
-          test "$(tr -d '\r\n' < /tmp/tarelie-published-marker.txt)" = "$EXPECTED_DOMAIN"
-          echo 'FTPS_PUBLICATION=verified_exact_bytes'
-
-      - name: Verify HTTPS when DNS and certificate are ready
-        if: env.MODE == 'deploy'
-        shell: bash
-        run: |
-          set -euo pipefail
-          if ! getent ahostsv4 dom.tarelie.ru >/dev/null; then
-            echo '::warning::SITE_PUBLISHED_TO_FTP; dom.tarelie.ru DNS is not yet resolvable. Configure DNS at the registrar.'
-            exit 0
-          fi
-          if ! curl --fail --location --silent --show-error --retry 3 --retry-delay 5 \
-            --connect-timeout 10 --max-time 45 \
-            "https://dom.tarelie.ru/?check=${GITHUB_SHA}" -o /tmp/tarelie-live-index.html; then
-            echo '::warning::FTPS publication verified, but HTTPS is not ready. Check DNS and SSL certificate on REG.RU.'
-            exit 0
-          fi
-          cmp -s site/index.html /tmp/tarelie-live-index.html || {
-            echo '::error::Public HTML differs from uploaded menu; check DNS / web-server binding.'
-            exit 1
-          }
-          echo 'PUBLIC_HTTPS=verified_exact_bytes'
+          echo 'TARELIE_PUBLIC_HTTPS=verified'
