@@ -23,17 +23,17 @@ const GROUPS = Object.freeze([
   {id:'breakfast',name:'Завтраки и десерты',tab:'Завтраки и десерты'}
 ]);
 const PRODUCTS = Object.freeze([
- {id:'pelmeni-chicken',category:'dumplings',name:'Пельмени ПП с куриным филе и луком',description:'Цельнозерновое тесто · куриное филе и лук',price:1000,unit:'kg',badge:'Цельнозерновые',img:'assets/pelmeni-chicken-wholegrain-20261101.webp'},
- {id:'pelmeni-beef',category:'dumplings',name:'Пельмени классические с говядиной',description:'Классический домашний вкус',price:850,unit:'kg',badge:'Домашние полуфабрикаты',img:'assets/img-79bc045f3016aa0f.webp'},
- {id:'khinkali',category:'dumplings',name:'Хинкали с говядиной',description:'Сочная начинка из говядины',price:850,unit:'kg',badge:'Домашние полуфабрикаты',img:'assets/img-941621935bb470b2.webp'},
+ {id:'pelmeni-chicken',category:'dumplings',name:'Пельмени ПП с куриным филе и луком',description:'Цельнозерновое тесто · куриное филе и лук',price:1000,unit:'kg',badge:'Цельнозерновые',img:'assets/pelmeni-chicken-fullplate-20261101.webp'},
+ {id:'pelmeni-beef',category:'dumplings',name:'Пельмени классические с говядиной',description:'Классический домашний вкус',price:850,unit:'kg',badge:'Домашние полуфабрикаты',img:'assets/pelmeni-beef-fullplate-20261101.webp'},
+ {id:'khinkali',category:'dumplings',name:'Хинкали с говядиной',description:'Сочная начинка из говядины',price:850,unit:'kg',badge:'Домашние полуфабрикаты',img:'assets/khinkali-fullplate-20261101.webp'},
  {id:'borscht',category:'soups',name:'Борщ',description:'Домашний обед',price:200,unit:'piece',badge:'Супы',img:'assets/borscht-full-bowl-20261101.webp'},
- {id:'pea-soup',category:'soups',name:'Гороховый суп',description:'Сытный домашний суп',price:200,unit:'piece',badge:'Супы',img:'assets/img-982cefe24c4a9600.webp'},
- {id:'mushroom-soup',category:'soups',name:'Крем-суп с шампиньонами',description:'С нежным грибным вкусом',price:250,unit:'piece',badge:'Супы',img:'assets/img-e1c3a1b5e5e998c7.webp'},
- {id:'vareniki',category:'home',name:'Вареники с картофелем',description:'Любимая домашняя классика',price:400,unit:'kg',badge:'Домашние полуфабрикаты',img:'assets/img-37fcb5659ca34f06.webp'},
+ {id:'pea-soup',category:'soups',name:'Гороховый суп',description:'Сытный домашний суп',price:200,unit:'piece',badge:'Супы',img:'assets/pea-soup-fullplate-20261101.webp'},
+ {id:'mushroom-soup',category:'soups',name:'Крем-суп с шампиньонами',description:'С нежным грибным вкусом',price:250,unit:'piece',badge:'Супы',img:'assets/mushroom-soup-fullplate-20261101.webp'},
+ {id:'vareniki',category:'home',name:'Вареники с картофелем',description:'Любимая домашняя классика',price:400,unit:'kg',badge:'Домашние полуфабрикаты',img:'assets/vareniki-fullplate-20261101.webp'},
  {id:'pepper',category:'home',name:'Перец фаршированный',description:'Домашняя классика',price:850,unit:'kg',badge:'Домашняя классика',img:'assets/pepper-stuffed-home-20261101.webp'},
- {id:'syrniki',category:'breakfast',name:'Сырники готовые',description:'6 штук в наборе',price:400,unit:'pack6',badge:'6 штук',img:'assets/img-83008923ee1ea26e.webp'},
- {id:'blini-tvorog',category:'breakfast',name:'Блинчики с творогом',description:'6 штук в наборе',price:450,unit:'pack6',badge:'6 штук',img:'assets/img-f93cbe522a7ae358.webp'},
- {id:'blini-savory',category:'breakfast',name:'Блины с курицей, сыром и шпинатом',description:'Количество в порции уточняйте',price:500,unit:'piece',badge:'Новинка',img:'assets/img-2a71b923c2099231.webp'}
+ {id:'syrniki',category:'breakfast',name:'Сырники готовые',description:'6 штук в наборе',price:400,unit:'pack6',badge:'6 штук',img:'assets/syrniki-fullplate-20261101.webp'},
+ {id:'blini-tvorog',category:'breakfast',name:'Блинчики с творогом',description:'6 штук в наборе',price:450,unit:'pack6',badge:'6 штук',img:'assets/blini-tvorog-fullplate-20261101.webp'},
+ {id:'blini-savory',category:'breakfast',name:'Блины с курицей, сыром и шпинатом',description:'Количество в порции уточняйте',price:500,unit:'piece',badge:'Новинка',img:'assets/blini-savory-fullplate-20261101.webp'}
 ]);
 // КБЖУ: временные ориентиры по усреднённым типовым рецептурам, на 100 г.
 // НЕ результаты лабораторного анализа и НЕ расчёт по фактическим технологическим картам производителя.

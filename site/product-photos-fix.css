@@ -1,20 +1,19 @@
-/* TARELIE — approved food photography with plate-safe per-product framing.
-   The original image bytes are never modified. Borscht uses the already-approved
-   full-bowl replacement; stuffed pepper and wholegrain PP photo stay unchanged. */
+/* TARELIE: identical, plate-safe photo framing for all 11 menu cards.
+   No image enlargement, no crop, no hover zoom. */
 .product-photo {
   display: block !important;
   position: relative !important;
   width: 100%;
   height: auto !important;
   min-height: 0 !important;
-  aspect-ratio: 1.42 !important;
+  aspect-ratio: 1120 / 789 !important;
   overflow: hidden;
-  background: #efe4d4;
+  background: #f0e4d6;
 }
 .product-photo img {
-  display: block;
   position: absolute !important;
   inset: 0 !important;
+  display: block !important;
   width: 100% !important;
   height: 100% !important;
   object-fit: contain !important;
@@ -22,26 +21,14 @@
   transform: none !important;
   transition: none !important;
 }
-.product-card:hover .product-photo img {transform: none !important;}
-.product-pill {z-index: 2;}
-/* Preserve the original photograph of wholegrain chicken pelmeni in its native ratio. */
-#product-pelmeni-chicken .product-photo {aspect-ratio: 975 / 680 !important;}
-/* Per-source framing of square images: retain the bowl, remove excess tabletop. */
-#product-pelmeni-beef .product-photo img {object-fit: cover !important; object-position: 50% 99% !important;}
-#product-khinkali .product-photo img {object-fit: cover !important; object-position: 50% 75% !important;}
-#product-pea-soup .product-photo img {object-fit: cover !important; object-position: 50% 80% !important;}
-#product-mushroom-soup .product-photo img {object-fit: cover !important; object-position: 50% 82% !important;}
-#product-vareniki .product-photo img {object-fit: cover !important; object-position: 50% 91% !important;}
-#product-syrniki .product-photo img {object-fit: cover !important; object-position: 50% 81% !important;}
-#product-blini-tvorog .product-photo img {object-fit: cover !important; object-position: 50% 88% !important;}
-#product-blini-savory .product-photo img {object-fit: cover !important; object-position: 50% 88% !important;}
-/* Full-bowl photos already match the intended format; do not crop them. */
-#product-borscht .product-photo img,
-#product-pepper .product-photo img {object-fit: contain !important; object-position: center center !important;}
+.product-card:hover .product-photo img {
+  transform: none !important;
+}
+.product-pill { z-index:2; }
 @media (max-width:700px) {
-  .product-photo {aspect-ratio:1.42 !important;}
-  #product-pelmeni-chicken .product-photo {aspect-ratio:975/680 !important;}
+  .product-photo { aspect-ratio: 1120 / 789 !important; }
+  .product-photo img { object-fit:contain !important; }
 }
 @media (prefers-reduced-motion:reduce) {
-  .product-photo img {transition:none !important;}
+  .product-photo img { transition:none !important; }
 }
