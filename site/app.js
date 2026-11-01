@@ -23,7 +23,7 @@ const GROUPS = Object.freeze([
   {id:'breakfast',name:'Завтраки и десерты',tab:'Завтраки и десерты'}
 ]);
 const PRODUCTS = Object.freeze([
- {id:'pelmeni-chicken',category:'dumplings',name:'Пельмени ПП с куриным филе и луком',description:'Цельнозерновое тесто · куриное филе и лук',price:1000,unit:'kg',badge:'Цельнозерновые',img:'assets/pelmeni-chicken-wholegrain-full-20261101.webp'},
+ {id:'pelmeni-chicken',category:'dumplings',name:'Пельмени ПП с куриным филе и луком',description:'Цельнозерновое тесто · куриное филе и лук',price:1000,unit:'kg',badge:'Цельнозерновые',img:'assets/pelmeni-chicken-wholegrain-20261101.webp'},
  {id:'pelmeni-beef',category:'dumplings',name:'Пельмени классические с говядиной',description:'Классический домашний вкус',price:850,unit:'kg',badge:'Домашние полуфабрикаты',img:'assets/img-79bc045f3016aa0f.webp'},
  {id:'khinkali',category:'dumplings',name:'Хинкали с говядиной',description:'Сочная начинка из говядины',price:850,unit:'kg',badge:'Домашние полуфабрикаты',img:'assets/img-941621935bb470b2.webp'},
  {id:'borscht',category:'soups',name:'Борщ',description:'Домашний обед',price:200,unit:'piece',badge:'Супы',img:'assets/borscht-full-bowl-20261101.webp'},

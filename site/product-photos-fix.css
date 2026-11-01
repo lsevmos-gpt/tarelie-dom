@@ -22,3 +22,20 @@
   .product-photo { aspect-ratio: 1.42 !important; }
   .product-photo img { object-fit: contain !important; }
 }
+
+/* Preserve the original, approved wholegrain pelmeni image without any cropping. */
+#product-pelmeni-chicken .product-photo {
+  aspect-ratio: 975 / 680 !important;
+  background: #f5eadb;
+}
+#product-pelmeni-chicken .product-photo img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: contain !important;
+  object-position: center center !important;
+  transform: none !important;
+  transition: none !important;
+}
+#product-pelmeni-chicken:hover .product-photo img {
+  transform: none !important;
+}
