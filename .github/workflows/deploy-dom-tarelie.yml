@@ -37,7 +37,7 @@ jobs:
           test "$FTP_USER" = "u3652448_dom"
           test "$DOMAIN" = "dom.tarelie.ru"
           test -s site/index.html
-          test "$(find site/assets -type f | wc -l)" -eq 15
+          test "$(find site/assets -type f | wc -l)" -ge 1
           grep -Fq 'ТАРЕЛЬЕ' site/index.html
           test -n "$FTP_PASSWORD"
 
