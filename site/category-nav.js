@@ -97,8 +97,13 @@
       });
       if (tab) {
         tab.click();
-        // Keep the selected chip visible within the horizontal rail.
-        tab.scrollIntoView({block:'nearest', inline:'nearest'});
+        // Center only the horizontal chip rail: never override the vertical
+        // scroll-to-products triggered by the existing catalog handler.
+        var rail = document.getElementById('categoryTabs');
+        if (rail) {
+          var left = tab.offsetLeft - rail.offsetLeft - Math.max(0, (rail.clientWidth - tab.offsetWidth) / 2);
+          rail.scrollTo({left: left, behavior: 'smooth'});
+        }
       }
     });
     dialog.addEventListener('close', function () {
