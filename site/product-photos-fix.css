@@ -1,34 +1,20 @@
-/* Product photography: retain the entire composition on every screen. */
+/* TARELIE — approved food photography with plate-safe per-product framing.
+   The original image bytes are never modified. Borscht uses the already-approved
+   full-bowl replacement; stuffed pepper and wholegrain PP photo stay unchanged. */
 .product-photo {
+  display: block !important;
+  position: relative !important;
+  width: 100%;
+  height: auto !important;
+  min-height: 0 !important;
   aspect-ratio: 1.42 !important;
-  display: grid;
-  place-items: center;
   overflow: hidden;
-  background: #eee0d0;
+  background: #efe4d4;
 }
 .product-photo img {
   display: block;
-  position: relative;
-  width: 100%;
-  height: 100%;
-  object-fit: contain !important;
-  object-position: center center;
-  transform: none !important;
-  transition: none !important;
-}
-.product-card:hover .product-photo img { transform: none !important; }
-.product-pill { z-index: 2; }
-@media (max-width: 700px) {
-  .product-photo { aspect-ratio: 1.42 !important; }
-  .product-photo img { object-fit: contain !important; }
-}
-
-/* Preserve the original, approved wholegrain pelmeni image without any cropping. */
-#product-pelmeni-chicken .product-photo {
-  aspect-ratio: 975 / 680 !important;
-  background: #f5eadb;
-}
-#product-pelmeni-chicken .product-photo img {
+  position: absolute !important;
+  inset: 0 !important;
   width: 100% !important;
   height: 100% !important;
   object-fit: contain !important;
@@ -36,6 +22,26 @@
   transform: none !important;
   transition: none !important;
 }
-#product-pelmeni-chicken:hover .product-photo img {
-  transform: none !important;
+.product-card:hover .product-photo img {transform: none !important;}
+.product-pill {z-index: 2;}
+/* Preserve the original photograph of wholegrain chicken pelmeni in its native ratio. */
+#product-pelmeni-chicken .product-photo {aspect-ratio: 975 / 680 !important;}
+/* Per-source framing of square images: retain the bowl, remove excess tabletop. */
+#product-pelmeni-beef .product-photo img {object-fit: cover !important; object-position: 50% 99% !important;}
+#product-khinkali .product-photo img {object-fit: cover !important; object-position: 50% 75% !important;}
+#product-pea-soup .product-photo img {object-fit: cover !important; object-position: 50% 80% !important;}
+#product-mushroom-soup .product-photo img {object-fit: cover !important; object-position: 50% 82% !important;}
+#product-vareniki .product-photo img {object-fit: cover !important; object-position: 50% 91% !important;}
+#product-syrniki .product-photo img {object-fit: cover !important; object-position: 50% 81% !important;}
+#product-blini-tvorog .product-photo img {object-fit: cover !important; object-position: 50% 88% !important;}
+#product-blini-savory .product-photo img {object-fit: cover !important; object-position: 50% 88% !important;}
+/* Full-bowl photos already match the intended format; do not crop them. */
+#product-borscht .product-photo img,
+#product-pepper .product-photo img {object-fit: contain !important; object-position: center center !important;}
+@media (max-width:700px) {
+  .product-photo {aspect-ratio:1.42 !important;}
+  #product-pelmeni-chicken .product-photo {aspect-ratio:975/680 !important;}
+}
+@media (prefers-reduced-motion:reduce) {
+  .product-photo img {transition:none !important;}
 }
