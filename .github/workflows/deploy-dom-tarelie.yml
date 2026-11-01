@@ -182,7 +182,107 @@ jobs:
               echo "::error::Default index.html not found. Refusing."
               exit 1
             }
-            grep -Ev '^(\\./|\\.\\./|index\\.html)$' /tmp/tarelie-first-publish-listing.txt > /tmp/tarelie-unexpected-files.txt || true
+            grep -Ev '^(\./|\.\./|index\.html) /tmp/tarelie-first-publish-listing.txt > /tmp/tarelie-unexpected-files.txt || true
+            if [[ -s /tmp/tarelie-unexpected-files.txt ]]; then
+              echo "::error::Unexpected remote files; first publication denied."
+              exit 1
+            fi
+            echo '54de7429672546e5ad06d1cab90c5699b140c2542963d7acfaa68ebb74973ac4  /tmp/tarelie-existing-index.html' | sha256sum -c -
+            grep -Fq 'Почти готово! Домен успешно привязан к хостингу' /tmp/tarelie-existing-index.html
+            echo 'REG_RU_DEFAULT_PLACEHOLDER=verified'
+          fi
+
+      - name: Back up existing remote files
+        if: env.MODE == 'deploy'
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p _tarelie_backup
+          lftp -u "$FTP_USER","$FTP_PASSWORD" "ftp://$FTP_HOST:21" -e "
+            set cmd:fail-exit true;
+            set ftp:ssl-force true;
+            set ftp:ssl-protect-data true;
+            set ftp:passive-mode true;
+            set ssl:verify-certificate true;
+            set net:max-retries 2;
+            set net:timeout 25;
+            mirror --verbose --no-perms --exclude-glob '.*' ./ _tarelie_backup/;
+            bye
+          "
+
+      - name: Preserve backup artifact
+        if: env.MODE == 'deploy'
+        uses: actions/upload-artifact@v4
+        with:
+          name: tarelie-backup-${{ github.run_id }}
+          path: _tarelie_backup/
+          if-no-files-found: warn
+          retention-days: 14
+
+      - name: Publish only TARELIE site (no delete)
+        if: env.MODE == 'deploy'
+        shell: bash
+        run: |
+          set -euo pipefail
+          printf "%s\n" "$EXPECTED_DOMAIN" > /tmp/tarelie-dom-root.txt
+          lftp -u "$FTP_USER","$FTP_PASSWORD" "ftp://$FTP_HOST:21" -e "
+            set cmd:fail-exit true;
+            set ftp:ssl-force true;
+            set ftp:ssl-protect-data true;
+            set ftp:passive-mode true;
+            set ssl:verify-certificate true;
+            set net:max-retries 2;
+            set net:timeout 25;
+            mirror -R --verbose --no-perms site/ ./;
+            put /tmp/tarelie-dom-root.txt -o .tarelie-dom-root.txt;
+            bye
+          "
+          echo "UPLOAD_COMPLETE=yes"
+
+      - name: Verify published bytes over protected FTPS
+        if: env.MODE == 'deploy'
+        shell: bash
+        run: |
+          set -euo pipefail
+          lftp -u "$FTP_USER","$FTP_PASSWORD" "ftp://$FTP_HOST:21" -e "
+            set cmd:fail-exit true;
+            set ftp:ssl-force true;
+            set ftp:ssl-protect-data true;
+            set ftp:passive-mode true;
+            set ssl:verify-certificate true;
+            set net:max-retries 2;
+            set net:timeout 25;
+            get index.html -o /tmp/tarelie-published-index.html;
+            get assets/img-b314a1bb70f8e2a7.png -o /tmp/tarelie-published-favicon.png;
+            get .tarelie-dom-root.txt -o /tmp/tarelie-published-marker.txt;
+            bye
+          "
+          cmp -s site/index.html /tmp/tarelie-published-index.html
+          cmp -s site/assets/img-b314a1bb70f8e2a7.png /tmp/tarelie-published-favicon.png
+          test "$(tr -d '\r\n' < /tmp/tarelie-published-marker.txt)" = "$EXPECTED_DOMAIN"
+          echo 'FTPS_PUBLICATION=verified_exact_bytes'
+
+      - name: Verify HTTPS when DNS and certificate are ready
+        if: env.MODE == 'deploy'
+        shell: bash
+        run: |
+          set -euo pipefail
+          if ! getent ahostsv4 dom.tarelie.ru >/dev/null; then
+            echo '::warning::SITE_PUBLISHED_TO_FTP; dom.tarelie.ru DNS is not yet resolvable. Configure DNS at the registrar.'
+            exit 0
+          fi
+          if ! curl --fail --location --silent --show-error --retry 3 --retry-delay 5 \
+            --connect-timeout 10 --max-time 45 \
+            "https://dom.tarelie.ru/?check=${GITHUB_SHA}" -o /tmp/tarelie-live-index.html; then
+            echo '::warning::FTPS publication verified, but HTTPS is not ready. Check DNS and SSL certificate on REG.RU.'
+            exit 0
+          fi
+          cmp -s site/index.html /tmp/tarelie-live-index.html || {
+            echo '::error::Public HTML differs from uploaded menu; check DNS / web-server binding.'
+            exit 1
+          }
+          echo 'PUBLIC_HTTPS=verified_exact_bytes'
+ /tmp/tarelie-first-publish-listing.txt > /tmp/tarelie-unexpected-files.txt || true
             if [[ -s /tmp/tarelie-unexpected-files.txt ]]; then
               echo "::error::Unexpected remote files; first publication denied."
               exit 1
