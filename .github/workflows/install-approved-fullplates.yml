@@ -1,0 +1,141 @@
+name: TARELIE install approved full-plate photos
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/install-approved-fullplates.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  install:
+    if: github.repository == 'lsevmos-gpt/tarelie-dom'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout exact project
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Install image conversion dependencies
+        run: python3 -m pip install -q Pillow requests
+      - name: Import and validate approved photos
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          from io import BytesIO
+          import re
+          import requests
+          from PIL import Image
+          
+          root = Path('site')
+          assets = root / 'assets'
+          urls = {"pelmeni-chicken":"https://d2ol7oe51mr4n9.cloudfront.net/user_3DGFj8YOvQgbPvppr50r6fgfGAi/068e63e4-1ed9-44b5-971d-58d797805302.png","pelmeni-beef":"https://d2ol7oe51mr4n9.cloudfront.net/user_3DGFj8YOvQgbPvppr50r6fgfGAi/dd13c4be-6c5a-4177-9669-495c29293c75.png","khinkali":"https://d2ol7oe51mr4n9.cloudfront.net/user_3DGFj8YOvQgbPvppr50r6fgfGAi/5a56be22-5673-43ed-90ca-c6bfc123e3b9.png","pea-soup":"https://d2ol7oe51mr4n9.cloudfront.net/user_3DGFj8YOvQgbPvppr50r6fgfGAi/ba8f1e4b-8d97-4c8d-93f6-89555ea18c48.png","mushroom-soup":"https://d2ol7oe51mr4n9.cloudfront.net/user_3DGFj8YOvQgbPvppr50r6fgfGAi/f777d3db-7acb-4ff3-948a-756d6a87cb16.png","vareniki":"https://d2ol7oe51mr4n9.cloudfront.net/user_3DGFj8YOvQgbPvppr50r6fgfGAi/37e60d04-531c-44d9-9175-48685d49606f.png","syrniki":"https://d2ol7oe51mr4n9.cloudfront.net/user_3DGFj8YOvQgbPvppr50r6fgfGAi/a5e7d9e5-01bf-4610-b733-fb2a23d87bf0.png","blini-tvorog":"https://d2ol7oe51mr4n9.cloudfront.net/user_3DGFj8YOvQgbPvppr50r6fgfGAi/09bc8532-ff0f-4005-a998-c5eaa1d4d9c7.png","blini-savory":"https://d2ol7oe51mr4n9.cloudfront.net/user_3DGFj8YOvQgbPvppr50r6fgfGAi/134d8bbc-d873-4e15-b454-8506ee91ce9a.png"}
+          old_paths = {
+              'pelmeni-chicken':'pelmeni-chicken-wholegrain-20261101.webp',
+              'pelmeni-beef':'img-79bc045f3016aa0f.webp',
+              'khinkali':'img-941621935bb470b2.webp',
+              'pea-soup':'img-982cefe24c4a9600.webp',
+              'mushroom-soup':'img-e1c3a1b5e5e998c7.webp',
+              'vareniki':'img-37fcb5659ca34f06.webp',
+              'syrniki':'img-83008923ee1ea26e.webp',
+              'blini-tvorog':'img-f93cbe522a7ae358.webp',
+              'blini-savory':'img-2a71b923c2099231.webp',
+          }
+          assert set(urls) == set(old_paths)
+          app_file = root / 'app.js'
+          app = app_file.read_text(encoding='utf-8')
+          # Safety: never overwrite a menu item or change prices/KBJU.
+          for product_id, old_filename in old_paths.items():
+              new_filename = f'{product_id}-fullplate-20261101.webp'
+              assert app.count("img:'assets/" + old_filename + "'") == 1, f'Unexpected source for {product_id}'
+              response = requests.get(urls[product_id], timeout=45)
+              response.raise_for_status()
+              im = Image.open(BytesIO(response.content)).convert('RGB')
+              w, h = im.size
+              if product_id == 'pelmeni-chicken':
+                  # Crop only outer background; retain label and entire bowl.
+                  assert w == 1672 and h == 941
+                  im = im.crop((115, 0, w-115, h))
+              else:
+                  ratio = 1120/789
+                  newh = round(w/ratio)
+                  if newh <= h:
+                      # Remove only unneeded top/bottom tabletop; plate stays visible.
+                      y = min(max(0,round(h * .045)),h-newh)
+                      im = im.crop((0,y,w,y+newh))
+                  else:
+                      neww = round(h*ratio)
+                      x = (w-neww)//2
+                      im = im.crop((x,0,x+neww,h))
+              im = im.resize((1120,789), Image.Resampling.LANCZOS)
+              output = assets / new_filename
+              im.save(output,'WEBP',quality=83,method=6)
+              test = Image.open(output)
+              assert test.size == (1120,789)
+              app = app.replace("img:'assets/"+old_filename+"'", "img:'assets/"+new_filename+"'")
+              print(f'IMPORTED {product_id} {output.stat().st_size} bytes',flush=True)
+          # Confirm all eleven products remain and only references changed.
+          assert app.count("img:'assets/") == 11
+          assert "borscht-full-bowl-20261101.webp" in app
+          assert "pepper-stuffed-home-20261101.webp" in app
+          app_file.write_text(app, encoding='utf-8')
+          
+          css = """/* TARELIE: identical, plate-safe photo framing for all 11 menu cards.
+             No image enlargement, no crop, no hover zoom. */
+          .product-photo {
+            display: block !important;
+            position: relative !important;
+            width: 100%;
+            height: auto !important;
+            min-height: 0 !important;
+            aspect-ratio: 1120 / 789 !important;
+            overflow: hidden;
+            background: #f0e4d6;
+          }
+          .product-photo img {
+            position: absolute !important;
+            inset: 0 !important;
+            display: block !important;
+            width: 100% !important;
+            height: 100% !important;
+            object-fit: contain !important;
+            object-position: center center !important;
+            transform: none !important;
+            transition: none !important;
+          }
+          .product-card:hover .product-photo img {
+            transform: none !important;
+          }
+          .product-pill { z-index:2; }
+          @media (max-width:700px) {
+            .product-photo { aspect-ratio: 1120 / 789 !important; }
+            .product-photo img { object-fit:contain !important; }
+          }
+          @media (prefers-reduced-motion:reduce) {
+            .product-photo img { transition:none !important; }
+          }
+          """
+          (root/'product-photos-fix.css').write_text(css,encoding='utf-8')
+          index_path = root/'index.html'
+          html = index_path.read_text(encoding='utf-8')
+          assert html.count('app.js?v=20261101d') == 1
+          assert html.count('product-photos-fix.css?v=20261101e') == 1
+          html = html.replace('app.js?v=20261101d','app.js?v=20261101f')
+          html = html.replace('product-photos-fix.css?v=20261101e','product-photos-fix.css?v=20261101f')
+          index_path.write_text(html,encoding='utf-8')
+          print('VALIDATION_OK: 11 images and unchanged prices/KBJU')
+          
+          PY
+      - name: Commit production image files and updated references
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "TARELIE publishing bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add site/app.js site/index.html site/product-photos-fix.css site/assets/*-fullplate-20261101.webp
+          git diff --cached --quiet && { echo "::error::No changes found"; exit 1; }
+          git commit -m "feat(tarelie): replace all cropped dish photos with approved full-plate images"
+          git push origin HEAD:main
