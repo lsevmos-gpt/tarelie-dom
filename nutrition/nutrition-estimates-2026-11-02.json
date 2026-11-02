@@ -1,0 +1,638 @@
+{
+  "title": "ТАРЕЛЬЕ — примерный расчёт КБЖУ на 100 г",
+  "status": "Оценка по типовым рецептурам, НЕ фактическая производственная технологическая карта",
+  "date": "2026-11-02",
+  "reference": "USDA FoodData Central SR Legacy, April 2018",
+  "sources": [
+    "https://fdc.nal.usda.gov/download-datasets/",
+    "https://www.consultant.ru/document/cons_doc_LAW_124614/9c657e3bfcafa9d498cdc9a875eeab88879d16df/",
+    "https://kodeks.karelia.ru/api/show/902320347",
+    "https://www.usmz.ru/products/iz-uglicha/tvorog-5-iz-uglicha/",
+    "https://www.perekrestok.ru/blog/kaloriynost-produktov/4/3931",
+    "https://health-diet.ru/base_of_food/sostav/229662.php"
+  ],
+  "formula": "P×4 + F×9 + available_C×4 + dietary_fibre×2; values per 100g are divided by assumed sold-stage yield weight",
+  "ingredient_values_per_100g": {
+    "chicken_raw": {
+      "name": "Chicken, broiler or fryers, breast, skinless, boneless, meat only, raw",
+      "p": 22.5,
+      "f": 2.62,
+      "c": 0,
+      "fiber": 0.0,
+      "fdc_id": 171077
+    },
+    "beef_85_15": {
+      "name": "Beef, ground, 85% lean meat / 15% fat, raw (Includes foods for USDA's Food Distribution Program)",
+      "p": 18.59,
+      "f": 15.0,
+      "c": 0,
+      "fiber": 0.0,
+      "fdc_id": 171796
+    },
+    "wholewheat_flour": {
+      "name": "Wheat flour, whole-grain (Includes foods for USDA's Food Distribution Program)",
+      "p": 13.21,
+      "f": 2.5,
+      "c": 61.27,
+      "fiber": 10.7,
+      "fdc_id": 168893
+    },
+    "wheat_flour": {
+      "name": "Wheat flour, white, all-purpose, unenriched",
+      "p": 10.33,
+      "f": 0.98,
+      "c": 73.61,
+      "fiber": 2.7,
+      "fdc_id": 169761
+    },
+    "rice_flour": {
+      "name": "Rice flour, white, unenriched",
+      "p": 5.95,
+      "f": 1.42,
+      "c": 77.73,
+      "fiber": 2.4,
+      "fdc_id": 169714
+    },
+    "egg_whole": {
+      "name": "Egg, whole, raw, fresh",
+      "p": 12.56,
+      "f": 9.51,
+      "c": 0.72,
+      "fiber": 0.0,
+      "fdc_id": 171287
+    },
+    "egg_yolk": {
+      "name": "Egg, yolk, raw, fresh",
+      "p": 15.86,
+      "f": 26.54,
+      "c": 3.59,
+      "fiber": 0.0,
+      "fdc_id": 172184
+    },
+    "onion": {
+      "name": "Onions, raw",
+      "p": 1.1,
+      "f": 0.1,
+      "c": 7.64,
+      "fiber": 1.7,
+      "fdc_id": 170000
+    },
+    "potato": {
+      "name": "Potatoes, flesh and skin, raw",
+      "p": 2.05,
+      "f": 0.09,
+      "c": 15.39,
+      "fiber": 2.1,
+      "fdc_id": 170026
+    },
+    "beet": {
+      "name": "Beets, raw",
+      "p": 1.61,
+      "f": 0.17,
+      "c": 6.76,
+      "fiber": 2.8,
+      "fdc_id": 169145
+    },
+    "carrot": {
+      "name": "Carrots, raw",
+      "p": 0.93,
+      "f": 0.24,
+      "c": 6.78,
+      "fiber": 2.8,
+      "fdc_id": 170393
+    },
+    "cabbage": {
+      "name": "Cabbage, raw",
+      "p": 1.28,
+      "f": 0.1,
+      "c": 3.3,
+      "fiber": 2.5,
+      "fdc_id": 169975
+    },
+    "tomato_paste": {
+      "name": "Tomato products, canned, paste, without salt added (Includes foods for USDA's Food Distribution Program)",
+      "p": 4.32,
+      "f": 0.47,
+      "c": 14.81,
+      "fiber": 4.1,
+      "fdc_id": 170459
+    },
+    "white_beans_cooked": {
+      "name": "Beans, white, mature seeds, cooked, boiled, without salt",
+      "p": 9.73,
+      "f": 0.35,
+      "c": 18.79,
+      "fiber": 6.3,
+      "fdc_id": 175203
+    },
+    "split_peas_dry": {
+      "name": "Peas, green, split, mature seeds, raw",
+      "p": 23.12,
+      "f": 3.89,
+      "c": 39.43,
+      "fiber": 22.2,
+      "fdc_id": 172428
+    },
+    "champignons": {
+      "name": "Mushrooms, white, raw",
+      "p": 3.09,
+      "f": 0.34,
+      "c": 2.26,
+      "fiber": 1.0,
+      "fdc_id": 169251
+    },
+    "green_pepper": {
+      "name": "Peppers, sweet, green, raw",
+      "p": 0.86,
+      "f": 0.17,
+      "c": 2.94,
+      "fiber": 1.7,
+      "fdc_id": 170427
+    },
+    "rice_cooked": {
+      "name": "Rice, white, long-grain, regular, unenriched, cooked without salt",
+      "p": 2.69,
+      "f": 0.28,
+      "c": 27.77,
+      "fiber": 0.4,
+      "fdc_id": 169757
+    },
+    "spinach": {
+      "name": "Spinach, raw",
+      "p": 2.86,
+      "f": 0.39,
+      "c": 1.43,
+      "fiber": 2.2,
+      "fdc_id": 168462
+    },
+    "ghee": {
+      "name": "Butter, Clarified butter (ghee)",
+      "p": 0.0,
+      "f": 100.0,
+      "c": 0,
+      "fiber": 0.0,
+      "fdc_id": 171314
+    },
+    "chicken_broth": {
+      "name": "Soup, chicken broth, ready-to-serve",
+      "p": 0.64,
+      "f": 0.21,
+      "c": 0.44,
+      "fiber": 0.0,
+      "fdc_id": 174536
+    },
+    "greek_yogurt": {
+      "name": "Yogurt, Greek, plain, lowfat",
+      "p": 9.95,
+      "f": 1.92,
+      "c": 3.94,
+      "fiber": 0.0,
+      "fdc_id": 170903
+    },
+    "vinegar": {
+      "name": "Vinegar, distilled",
+      "p": 0.0,
+      "f": 0.0,
+      "c": 0.04,
+      "fiber": 0.0,
+      "fdc_id": 172237
+    },
+    "salt": {
+      "name": "Salt, table",
+      "p": 0.0,
+      "f": 0.0,
+      "c": 0,
+      "fiber": 0.0,
+      "fdc_id": 173468
+    },
+    "black_pepper": {
+      "name": "Spices, pepper, black",
+      "p": 10.39,
+      "f": 3.26,
+      "c": 38.65,
+      "fiber": 25.3,
+      "fdc_id": 170931
+    },
+    "parsley": {
+      "name": "Parsley, fresh",
+      "p": 2.97,
+      "f": 0.79,
+      "c": 3.03,
+      "fiber": 3.3,
+      "fdc_id": 170416
+    },
+    "khmeli_proxy": {
+      "name": "Spices, curry powder",
+      "p": 14.29,
+      "f": 14.01,
+      "c": 2.63,
+      "fiber": 53.2,
+      "fdc_id": 170924
+    },
+    "curd5": {
+      "name": "Творог 5%",
+      "p": 16,
+      "f": 5,
+      "c": 3,
+      "fiber": 0,
+      "assumption": "Для фактического творога проверить этикетку"
+    },
+    "cream20": {
+      "name": "Сливки питьевые 20%",
+      "p": 2.5,
+      "f": 20,
+      "c": 4,
+      "fiber": 0,
+      "assumption": "Точную марку проверить"
+    },
+    "lactosefree_milk25": {
+      "name": "Молоко безлактозное 2,5%",
+      "p": 2.8,
+      "f": 2.5,
+      "c": 4.7,
+      "fiber": 0,
+      "assumption": "Жирность молока изготовитель не уточнил"
+    },
+    "cheese17": {
+      "name": "Сыр лёгкий 17%",
+      "p": 24,
+      "f": 17,
+      "c": 2.5,
+      "fiber": 0,
+      "assumption": "Фактическая этикетка 17% сыра неизвестна"
+    },
+    "smoked_chicken_broth": {
+      "name": "Бульон из копчёной курицы",
+      "p": 1.0,
+      "f": 0.9,
+      "c": 0.5,
+      "fiber": 0,
+      "assumption": "Концентрация и содержание жира неизвестны"
+    },
+    "water": {
+      "name": "Вода",
+      "p": 0,
+      "f": 0,
+      "c": 0,
+      "fiber": 0,
+      "assumption": "Вода для приготовления теста и супов"
+    },
+    "noncaloric_sweetener": {
+      "name": "Сахарозаменитель",
+      "p": 0,
+      "f": 0,
+      "c": 0,
+      "fiber": 0,
+      "assumption": "Предполагается некалорийный; вид необходимо проверить"
+    }
+  },
+  "recipes": [
+    {
+      "id": "pelmeni-chicken",
+      "name": "Пельмени ПП с куриным филе и луком",
+      "sale_state": "полуфабрикат, до варки",
+      "assumed_input_g": 1000,
+      "assumed_yield_g": 1000,
+      "ingredient_weights_g": {
+        "chicken_raw": 430,
+        "onion": 85,
+        "wholewheat_flour": 310,
+        "egg_whole": 90,
+        "water": 80,
+        "salt": 4,
+        "black_pepper": 1
+      },
+      "calculated_per_100g": {
+        "kcal": 170.9,
+        "protein_g": 15.0,
+        "fat_g": 2.77,
+        "available_carbs_g": 19.75,
+        "fiber_g": 3.49
+      },
+      "shown_per_100g": {
+        "kcal": 170,
+        "protein_g": 15.0,
+        "fat_g": 2.8,
+        "carbs_g": 19.7
+      },
+      "note": "Тесто на цельнозерновой пшеничной муке; соотношение теста и начинки примерное."
+    },
+    {
+      "id": "pelmeni-beef",
+      "name": "Пельмени классические с говядиной",
+      "sale_state": "полуфабрикат, до варки",
+      "assumed_input_g": 1000,
+      "assumed_yield_g": 1000,
+      "ingredient_weights_g": {
+        "beef_85_15": 430,
+        "onion": 90,
+        "wheat_flour": 320,
+        "egg_whole": 80,
+        "water": 75,
+        "salt": 4,
+        "black_pepper": 1
+      },
+      "calculated_per_100g": {
+        "kcal": 216.92,
+        "protein_g": 12.41,
+        "fat_g": 7.54,
+        "available_carbs_g": 24.34,
+        "fiber_g": 1.04
+      },
+      "shown_per_100g": {
+        "kcal": 215,
+        "protein_g": 12.4,
+        "fat_g": 7.5,
+        "carbs_g": 24.3
+      },
+      "note": "Говяжий фарш условно 85% постного мяса/15% жира; реальная жирность неизвестна."
+    },
+    {
+      "id": "khinkali",
+      "name": "Хинкали с говядиной",
+      "sale_state": "полуфабрикат, до варки",
+      "assumed_input_g": 1000,
+      "assumed_yield_g": 1000,
+      "ingredient_weights_g": {
+        "beef_85_15": 460,
+        "onion": 90,
+        "parsley": 8,
+        "khmeli_proxy": 2,
+        "wheat_flour": 320,
+        "egg_whole": 60,
+        "water": 55,
+        "salt": 4,
+        "black_pepper": 1
+      },
+      "calculated_per_100g": {
+        "kcal": 221.33,
+        "protein_g": 12.77,
+        "fat_g": 7.83,
+        "available_carbs_g": 24.35,
+        "fiber_g": 1.18
+      },
+      "shown_per_100g": {
+        "kcal": 220,
+        "protein_g": 12.8,
+        "fat_g": 7.8,
+        "carbs_g": 24.4
+      },
+      "note": "Для хмели-сунели использован близкий справочный профиль сушёной смеси специй (малое количество)."
+    },
+    {
+      "id": "borscht",
+      "name": "Борщ",
+      "sale_state": "готовое блюдо",
+      "assumed_input_g": 4100,
+      "assumed_yield_g": 4000,
+      "ingredient_weights_g": {
+        "chicken_broth": 2450,
+        "potato": 350,
+        "beet": 320,
+        "carrot": 150,
+        "onion": 130,
+        "cabbage": 320,
+        "white_beans_cooked": 240,
+        "tomato_paste": 105,
+        "vinegar": 20,
+        "salt": 14,
+        "black_pepper": 1
+      },
+      "calculated_per_100g": {
+        "kcal": 28.45,
+        "protein_g": 1.57,
+        "fat_g": 0.2,
+        "available_carbs_g": 4.45,
+        "fiber_g": 1.26
+      },
+      "shown_per_100g": {
+        "kcal": 30,
+        "protein_g": 1.6,
+        "fat_g": 0.2,
+        "carbs_g": 4.4
+      },
+      "note": "Бульон без дополнительных кусочков мяса и без масла; выход после небольшого испарения."
+    },
+    {
+      "id": "pea-soup",
+      "name": "Гороховый суп",
+      "sale_state": "готовое блюдо",
+      "assumed_input_g": 3213,
+      "assumed_yield_g": 3150,
+      "ingredient_weights_g": {
+        "smoked_chicken_broth": 2100,
+        "split_peas_dry": 440,
+        "potato": 390,
+        "carrot": 140,
+        "onion": 130,
+        "salt": 12,
+        "black_pepper": 1
+      },
+      "calculated_per_100g": {
+        "kcal": 68.12,
+        "protein_g": 4.24,
+        "fat_g": 1.17,
+        "available_carbs_g": 8.38,
+        "fiber_g": 3.56
+      },
+      "shown_per_100g": {
+        "kcal": 70,
+        "protein_g": 4.2,
+        "fat_g": 1.2,
+        "carbs_g": 8.4
+      },
+      "note": "Условно 440 г сухого гороха; питательность зависит от концентрации копчёного бульона."
+    },
+    {
+      "id": "mushroom-soup",
+      "name": "Крем-суп из шампиньонов",
+      "sale_state": "готовое блюдо",
+      "assumed_input_g": 3650,
+      "assumed_yield_g": 3500,
+      "ingredient_weights_g": {
+        "champignons": 900,
+        "potato": 600,
+        "onion": 200,
+        "cream20": 650,
+        "water": 1280,
+        "salt": 18,
+        "black_pepper": 2
+      },
+      "calculated_per_100g": {
+        "kcal": 60.28,
+        "protein_g": 1.68,
+        "fat_g": 3.82,
+        "available_carbs_g": 4.42,
+        "fiber_g": 0.73
+      },
+      "shown_per_100g": {
+        "kcal": 60,
+        "protein_g": 1.7,
+        "fat_g": 3.8,
+        "carbs_g": 4.4
+      },
+      "note": "Без масла, с 650 г сливок 20% в условной партии и небольшим испарением воды."
+    },
+    {
+      "id": "vareniki",
+      "name": "Вареники с картофелем",
+      "sale_state": "полуфабрикат, до варки",
+      "assumed_input_g": 1000,
+      "assumed_yield_g": 1000,
+      "ingredient_weights_g": {
+        "potato": 450,
+        "onion": 75,
+        "wheat_flour": 330,
+        "egg_whole": 90,
+        "water": 50,
+        "salt": 4,
+        "black_pepper": 1
+      },
+      "calculated_per_100g": {
+        "kcal": 164.84,
+        "protein_g": 5.55,
+        "fat_g": 1.23,
+        "available_carbs_g": 31.89,
+        "fiber_g": 1.99
+      },
+      "shown_per_100g": {
+        "kcal": 165,
+        "protein_g": 5.6,
+        "fat_g": 1.2,
+        "carbs_g": 31.9
+      },
+      "note": "Масса картофеля условно до приготовления начинки; пропорции теста могут отличаться."
+    },
+    {
+      "id": "pepper",
+      "name": "Перец фаршированный",
+      "sale_state": "полуфабрикат, до приготовления",
+      "assumed_input_g": 1000,
+      "assumed_yield_g": 1000,
+      "ingredient_weights_g": {
+        "green_pepper": 475,
+        "beef_85_15": 195,
+        "chicken_raw": 95,
+        "rice_cooked": 160,
+        "onion": 70,
+        "salt": 4,
+        "black_pepper": 1
+      },
+      "calculated_per_100g": {
+        "kcal": 84.23,
+        "protein_g": 6.69,
+        "fat_g": 3.31,
+        "available_carbs_g": 6.41,
+        "fiber_g": 1.02
+      },
+      "shown_per_100g": {
+        "kcal": 85,
+        "protein_g": 6.7,
+        "fat_g": 3.3,
+        "carbs_g": 6.4
+      },
+      "note": "Рис условно предварительно отваренный; перец продаётся неготовым. Жирность говядины неизвестна."
+    },
+    {
+      "id": "blini-savory",
+      "name": "Блинчики с курицей, сыром и шпинатом",
+      "sale_state": "готовый продукт",
+      "assumed_input_g": 1563,
+      "assumed_yield_g": 1370,
+      "ingredient_weights_g": {
+        "rice_flour": 230,
+        "lactosefree_milk25": 470,
+        "egg_whole": 160,
+        "ghee": 38,
+        "noncaloric_sweetener": 5,
+        "salt": 5,
+        "chicken_raw": 380,
+        "cheese17": 180,
+        "spinach": 90,
+        "black_pepper": 5
+      },
+      "calculated_per_100g": {
+        "kcal": 186.51,
+        "protein_g": 13.05,
+        "fat_g": 7.98,
+        "available_carbs_g": 15.31,
+        "fiber_g": 0.64
+      },
+      "shown_per_100g": {
+        "kcal": 185,
+        "protein_g": 13.0,
+        "fat_g": 8.0,
+        "carbs_g": 15.3
+      },
+      "note": "Вся порция масла гхи учтена в тесте; без отдельного масла для жарки. Потеря массы при приготовлении ориентировочно 12%. Сыр/молоко — условные профили."
+    },
+    {
+      "id": "blini-tvorog",
+      "name": "Блинчики с творогом",
+      "sale_state": "готовый продукт",
+      "assumed_input_g": 1503,
+      "assumed_yield_g": 1310,
+      "ingredient_weights_g": {
+        "rice_flour": 230,
+        "lactosefree_milk25": 480,
+        "egg_whole": 160,
+        "ghee": 38,
+        "noncaloric_sweetener": 10,
+        "salt": 5,
+        "curd5": 450,
+        "greek_yogurt": 130
+      },
+      "calculated_per_100g": {
+        "kcal": 172.93,
+        "protein_g": 10.09,
+        "fat_g": 7.14,
+        "available_carbs_g": 16.88,
+        "fiber_g": 0.42
+      },
+      "shown_per_100g": {
+        "kcal": 175,
+        "protein_g": 10.1,
+        "fat_g": 7.1,
+        "carbs_g": 16.9
+      },
+      "note": "Творог условно 5% жирности (в составе блинчиков жирность не указана). Потеря влаги при приготовлении ориентировочно 13%."
+    },
+    {
+      "id": "syrniki",
+      "name": "Сырники",
+      "sale_state": "готовый продукт",
+      "assumed_input_g": 1035,
+      "assumed_yield_g": 930,
+      "ingredient_weights_g": {
+        "curd5": 800,
+        "rice_flour": 145,
+        "egg_yolk": 80,
+        "noncaloric_sweetener": 5,
+        "salt": 5
+      },
+      "calculated_per_100g": {
+        "kcal": 186.25,
+        "protein_g": 16.06,
+        "fat_g": 6.81,
+        "available_carbs_g": 15.01,
+        "fiber_g": 0.37
+      },
+      "shown_per_100g": {
+        "kcal": 185,
+        "protein_g": 16.1,
+        "fat_g": 6.8,
+        "carbs_g": 15.0
+      },
+      "note": "Без дополнительного масла для жарки, так как оно не указано в составе. Потеря массы при приготовлении ориентировочно 10%."
+    }
+  ],
+  "limitations": [
+    "Actual product composition varies with ingredient brands, moisture and cooking losses.",
+    "Sweetener was assumed noncaloric; type is not known.",
+    "Beef mince was modeled at 85% lean / 15% fat; actual fat content is unknown.",
+    "Producer-specific weight, preparation method, oil use and portion yield are not provided.",
+    "Numbers are illustrative only; not manufacturer-certified values or lab results.",
+    "Carbohydrates exclude fibre as required by TR TS 022/2011.",
+    "Calorie factors use 4 kcal/g protein and carbohydrates, 9 kcal/g fats, 2 kcal/g fibre."
+  ]
+}

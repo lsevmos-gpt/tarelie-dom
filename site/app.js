@@ -35,23 +35,22 @@ const PRODUCTS = Object.freeze([
  {id:'blini-tvorog',category:'breakfast',name:'Блинчики с творогом',description:'Тонкие, мягкие блинчики с нежной творожной начинкой — уютный домашний вкус в каждом кусочке.',price:450,unit:'pack6',badge:'6 штук',img:'assets/blini-tvorog-fullplate-20261101.webp'},
  {id:'blini-savory',category:'breakfast',name:'Блины с курицей, сыром и шпинатом',description:'Румяные тонкие блинчики с сочной курицей, нежным сыром и шпинатом — сытно и невероятно вкусно.',price:500,unit:'piece',badge:'Новинка',img:'assets/blini-savory-fullplate-20261101.webp'}
 ]);
-// КБЖУ: временные ориентиры по усреднённым типовым рецептурам, на 100 г.
-// НЕ результаты лабораторного анализа и НЕ расчёт по фактическим технологическим картам производителя.
-// После получения фактических рецептур/КБЖУ заменить значения здесь и изменить метку в интерфейсе.
-// Полуфабрикаты (пельмени, хинкали, вареники) — 100 г до варки;
-// остальные позиции — 100 г готового блюда (статус перца требует уточнения).
+// КБЖУ: расчёт 02.11.2026 по 11 ПРИМЕРНЫМ рецептурам и условному выходу продукции.
+// USDA FoodData Central (SR Legacy); энергия по ТР ТС 022/2011: 4P+9F+4C+2 пищевые волокна.
+// Углеводы без пищевых волокон. Не являются технологическими картами или лабораторными данными.
+// Граммовки и исходные профили ингредиентов сохранены в /nutrition/nutrition-estimates-2026-11-02.json.
 const NUTRITION_ESTIMATE = Object.freeze({
-  'pelmeni-chicken':{kcal:180,protein:14,fat:4,carbs:22},
-  'pelmeni-beef':{kcal:230,protein:12,fat:10,carbs:23},
-  'khinkali':{kcal:220,protein:11,fat:8,carbs:26},
-  'borscht':{kcal:55,protein:2,fat:3,carbs:5},
-  'pea-soup':{kcal:90,protein:4,fat:4,carbs:9},
-  'mushroom-soup':{kcal:100,protein:3,fat:6,carbs:8},
-  'vareniki':{kcal:205,protein:5,fat:3,carbs:39},
-  'pepper':{kcal:105,protein:6,fat:6,carbs:7},
-  'syrniki':{kcal:235,protein:14,fat:12,carbs:18},
-  'blini-tvorog':{kcal:215,protein:9,fat:9,carbs:24},
-  'blini-savory':{kcal:225,protein:13,fat:11,carbs:18},
+  'pelmeni-chicken':{kcal:170,protein:15,fat:2.8,carbs:19.7},
+  'pelmeni-beef':{kcal:215,protein:12.4,fat:7.5,carbs:24.3},
+  'khinkali':{kcal:220,protein:12.8,fat:7.8,carbs:24.4},
+  'borscht':{kcal:30,protein:1.6,fat:0.2,carbs:4.4},
+  'pea-soup':{kcal:70,protein:4.2,fat:1.2,carbs:8.4},
+  'mushroom-soup':{kcal:60,protein:1.7,fat:3.8,carbs:4.4},
+  'vareniki':{kcal:165,protein:5.6,fat:1.2,carbs:31.9},
+  'pepper':{kcal:85,protein:6.7,fat:3.3,carbs:6.4},
+  'syrniki':{kcal:185,protein:16.1,fat:6.8,carbs:15},
+  'blini-tvorog':{kcal:175,protein:10.1,fat:7.1,carbs:16.9},
+  'blini-savory':{kcal:185,protein:13,fat:8,carbs:15.3},
 });
 
 const fmt = new Intl.NumberFormat('ru-RU', {maximumFractionDigits:1});
