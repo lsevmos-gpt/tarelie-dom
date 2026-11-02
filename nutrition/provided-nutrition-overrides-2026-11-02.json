@@ -1,0 +1,66 @@
+{
+  "date": "2026-11-02",
+  "source": "new values supplied by user in chat",
+  "unit": "per 100 g (existing product-card basis, assumed; clarify if values were per serving)",
+  "overrides_previous_estimates": true,
+  "earlier_model_file": "nutrition-estimates-2026-11-02.json",
+  "note": "Previous modeled values and recipe assumptions remain unchanged in the earlier file for auditability. These overrides take precedence on the website.",
+  "products": {
+    "blini-savory": {
+      "reference_product": "blini-savory",
+      "state": "готовый продукт",
+      "per_100g": {
+        "kcal": 182,
+        "protein": 14.75,
+        "fat": 10.65,
+        "carbs": 13.3
+      },
+      "approximate_fields": [],
+      "calories_as_provided": true,
+      "energy_consistency_note": "Check the supplied kcal against 4/9/4 macro factors before using as certified retail labeling"
+    },
+    "blini-tvorog": {
+      "reference_product": "blini-tvorog",
+      "state": "готовый продукт",
+      "per_100g": {
+        "kcal": 158,
+        "protein": 12.95,
+        "fat": 6.5,
+        "carbs": 11.5
+      },
+      "approximate_fields": [],
+      "calories_as_provided": true,
+      "energy_consistency_note": "Check the supplied kcal against 4/9/4 macro factors before using as certified retail labeling"
+    },
+    "pepper": {
+      "reference_product": "pepper",
+      "state": "только начинка (не фаршированный перец целиком)",
+      "per_100g": {
+        "kcal": 128,
+        "protein": 13.5,
+        "fat": 4.5,
+        "carbs": 9.5
+      },
+      "approximate_fields": [
+        "protein",
+        "fat",
+        "carbs"
+      ],
+      "calories_as_provided": true,
+      "energy_consistency_note": "Check the supplied kcal against 4/9/4 macro factors before using as certified retail labeling"
+    },
+    "syrniki": {
+      "reference_product": "syrniki",
+      "state": "готовый продукт",
+      "per_100g": {
+        "kcal": 181,
+        "protein": 16.7,
+        "fat": 9.3,
+        "carbs": 10.7
+      },
+      "approximate_fields": [],
+      "calories_as_provided": true,
+      "energy_consistency_note": "Check the supplied kcal against 4/9/4 macro factors before using as certified retail labeling"
+    }
+  }
+}

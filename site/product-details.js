@@ -78,7 +78,21 @@
     if (p.category === 'soups') return 'Объём порции и способ получения уточняются при заказе.';
     return 'Условия получения и количество в порции уточняются при заказе.';
   }
+  // Four figures supplied on 02.11.2026 override the earlier model estimates.
+  // Do not conflate pepper filling with the entire stuffed pepper.
+  var PROVIDED_NUTRITION = new Set(['blini-savory','blini-tvorog','syrniki']);
+  var nutritionNumber = new Intl.NumberFormat('ru-RU', {maximumFractionDigits:2});
+  function nutritionHeading(p) {
+    return p.id === 'pepper' ? 'КБЖУ начинки на 100 г' : 'КБЖУ на 100 г';
+  }
+  function nutritionStatus(p) {
+    if (p.id === 'pepper') return '≈ только начинка';
+    if (PROVIDED_NUTRITION.has(p.id)) return 'по предоставленным данным';
+    return '≈ предварительно';
+  }
   function nutritionNotes(p) {
+    if (p.id === 'pepper') return 'Данные относятся только к начинке, а не к фаршированному перцу целиком. Белки, жиры и углеводы указаны приблизительно. Показатели предоставлены для 100 г начинки.';
+    if (PROVIDED_NUTRITION.has(p.id)) return 'Значения предоставлены для продукта на 100 г и заменяют прежний расчёт по типовой рецептуре. Не являются лабораторным подтверждением.';
     var stage = SEMIFINISHED.has(p.id)
       ? 'на 100 г продаваемого полуфабриката до приготовления'
       : 'на 100 г готового продукта';
@@ -91,8 +105,10 @@
       ['Ккал', n.kcal, 'ккал'], ['Белки', n.protein, 'г'],
       ['Жиры', n.fat, 'г'], ['Углеводы', n.carbs, 'г']
     ];
-    return '<div class="pd-nutrition-grid" aria-label="Ориентировочные КБЖУ на 100 граммов">' + entries.map(function (a) {
-      return '<div class="pd-nutrient"><strong>' + esc(a[1]) + '</strong><span>' + esc(a[2]) + '</span><small>' + esc(a[0]) + '</small></div>';
+    return '<div class="pd-nutrition-grid" aria-label="' + esc(nutritionHeading(p)) + '">' + entries.map(function (a, i) {
+      var number = nutritionNumber.format(a[1]);
+      if (p.id === 'pepper' && i > 0) number = '≈ ' + number;
+      return '<div class="pd-nutrient"><strong>' + esc(number) + '</strong><span>' + esc(a[2]) + '</span><small>' + esc(a[0]) + '</small></div>';
     }).join('') + '</div><p class="pd-muted pd-nutrition-footnote">' + esc(nutritionNotes(p)) + '</p>';
   }
   function productPhotos(p) {
@@ -131,7 +147,7 @@
       '<p class="pd-lead" id="productDetailLead">' + esc(p.description) + '</p>' +
       '<section class="pd-section" aria-labelledby="pdIngredientsHeading"><h3 id="pdIngredientsHeading">Состав</h3>' + ingredients +
       '<p class="pd-muted pd-recipe-source">Состав по информации изготовителя. Возможные следы аллергенов уточняются.</p></section>' +
-      '<section class="pd-section" aria-labelledby="pdNutritionHeading"><div class="pd-heading-row"><h3 id="pdNutritionHeading">КБЖУ на 100 г</h3><span class="pd-estimate">≈ предварительно</span></div>' + nutritionHtml(p) + '</section>' +
+      '<section class="pd-section" aria-labelledby="pdNutritionHeading"><div class="pd-heading-row"><h3 id="pdNutritionHeading">' + esc(nutritionHeading(p)) + '</h3><span class="pd-estimate">' + esc(nutritionStatus(p)) + '</span></div>' + nutritionHtml(p) + '</section>' +
       '<section class="pd-section pd-order-note" aria-labelledby="pdFormatHeading"><h3 id="pdFormatHeading">Продажа и фасовка</h3><p>' + esc(purchaseInfo(p)) + '</p>' +
       (SEMIFINISHED.has(p.id) ? '<p class="pd-muted">Способ приготовления уточним после получения рекомендаций изготовителя.</p>' : '') + '</section>' +
       '</section></div>';

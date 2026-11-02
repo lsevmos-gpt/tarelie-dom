@@ -47,10 +47,10 @@ const NUTRITION_ESTIMATE = Object.freeze({
   'pea-soup':{kcal:70,protein:4.2,fat:1.2,carbs:8.4},
   'mushroom-soup':{kcal:60,protein:1.7,fat:3.8,carbs:4.4},
   'vareniki':{kcal:165,protein:5.6,fat:1.2,carbs:31.9},
-  'pepper':{kcal:85,protein:6.7,fat:3.3,carbs:6.4},
-  'syrniki':{kcal:185,protein:16.1,fat:6.8,carbs:15},
-  'blini-tvorog':{kcal:175,protein:10.1,fat:7.1,carbs:16.9},
-  'blini-savory':{kcal:185,protein:13,fat:8,carbs:15.3},
+  'pepper':{kcal:128,protein:13.5,fat:4.5,carbs:9.5},
+  'syrniki':{kcal:181,protein:16.7,fat:9.3,carbs:10.7},
+  'blini-tvorog':{kcal:158,protein:12.95,fat:6.5,carbs:11.5},
+  'blini-savory':{kcal:182,protein:14.75,fat:10.65,carbs:13.3},
 });
 
 const fmt = new Intl.NumberFormat('ru-RU', {maximumFractionDigits:1});
