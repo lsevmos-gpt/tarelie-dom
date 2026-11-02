@@ -103,3 +103,23 @@ body.pd-open { overflow:hidden; }
 @media (prefers-reduced-motion:reduce) {
  .pd-detail-link svg {transition:none;}
 }
+
+
+/* Ingredients furnished by the producer: compact, readable and grouped where appropriate. */
+.pd-recipe { display:flex; flex-direction:column; gap:11px; }
+.pd-recipe-part { display:flex; flex-direction:column; gap:3px; }
+.pd-recipe-subheading { color:#703c32; font-weight:750; font-size:12px; line-height:1.4; }
+.pd-section .pd-recipe-ingredients { color:#4b342e; font-size:13px; line-height:1.55; margin:0; overflow-wrap:break-word; }
+.pd-section .pd-recipe-gluten {
+  border-left:2px solid #9d8d5a;
+  padding:5px 0 5px 10px;
+  margin:3px 0 0;
+  font-size:11px;
+  line-height:1.5;
+  color:#77614e;
+}
+.pd-section .pd-recipe-source { margin-top:10px; }
+@media(max-width:700px) {
+  .pd-recipe { gap:10px; }
+  .pd-section .pd-recipe-ingredients { font-size:13px; }
+}

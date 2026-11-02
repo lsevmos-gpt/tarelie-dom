@@ -17,21 +17,51 @@
       note: 'Настоящая фотография полуфабриката до приготовления.'
     }
   });
-  /* Указаны только ингредиенты, очевидные из названия и предоставленной информации,
-     это НЕ рецептура, НЕ полный состав и НЕ декларация аллергенов. */
-  var KNOWN_INGREDIENTS = Object.freeze({
-    'pelmeni-chicken': 'Цельнозерновое тесто, куриное филе, лук.',
-    'pelmeni-beef': 'Тесто, говядина.',
-    khinkali: 'Тесто, говядина.',
-    borscht: '',
-    'pea-soup': 'Горох.',
-    'mushroom-soup': 'Шампиньоны.',
-    vareniki: 'Тесто, картофель.',
-    pepper: 'Сладкий перец, мясная начинка.',
-    syrniki: 'Творог.',
-    'blini-tvorog': 'Блинчики, творог.',
-    'blini-savory': 'Блинчики, курица, сыр, шпинат.'
+  /* Составы предоставлены изготовителем 02.11.2026.
+     Порядок компонентов и формулировки сохраняем без добавления неподтверждённых ингредиентов.
+     Вид сахарозаменителя и следовые аллергены ещё требуют уточнения. */
+  var PRODUCT_RECIPES = Object.freeze({
+    'pelmeni-chicken': [
+      {part:'Начинка', text:'Куриное филе, репчатый лук, соль, чёрный молотый перец.'},
+      {part:'Тесто', text:'Цельнозерновая мука, куриные яйца.'}
+    ],
+    'pelmeni-beef': [
+      {part:'Начинка', text:'Говяжий фарш, репчатый лук, соль, чёрный молотый перец.'},
+      {part:'Тесто', text:'Пшеничная мука, куриные яйца.'}
+    ],
+    khinkali: [
+      {part:'Начинка', text:'Говяжий фарш, репчатый лук, зелень, хмели-сунели, соль, чёрный молотый перец.'},
+      {part:'Тесто', text:'Пшеничная мука, куриные яйца.'}
+    ],
+    borscht: [
+      {part:'', text:'Куриный бульон, картофель, свёкла, морковь, репчатый лук, капуста, фасоль, томатная паста, 9% уксус, соль, чёрный молотый перец.'}
+    ],
+    'pea-soup': [
+      {part:'', text:'Бульон из копчёной курицы, картофель, горох, морковь, репчатый лук, соль, чёрный молотый перец.'}
+    ],
+    'mushroom-soup': [
+      {part:'', text:'Шампиньоны, картофель, репчатый лук, сливки 20%, соль, чёрный молотый перец.'}
+    ],
+    vareniki: [
+      {part:'Начинка', text:'Картофель, репчатый лук, соль, чёрный молотый перец.'},
+      {part:'Тесто', text:'Пшеничная мука, куриные яйца.'}
+    ],
+    pepper: [
+      {part:'', text:'Говяжий фарш, куриное филе, рис, репчатый лук, сладкий зелёный перец, соль, чёрный молотый перец.'}
+    ],
+    'blini-savory': [
+      {part:'Тесто', text:'Рисовая мука, безлактозное молоко, куриные яйца, масло гхи, сахарозаменитель, соль.'},
+      {part:'Начинка', text:'Куриное филе, лёгкий сыр (17% жирности), шпинат, соль, чёрный молотый перец.'}
+    ],
+    'blini-tvorog': [
+      {part:'Тесто', text:'Рисовая мука, безлактозное молоко, куриные яйца, масло гхи, сахарозаменитель, соль.'},
+      {part:'Начинка', text:'Творог, греческий йогурт, сахарозаменитель.'}
+    ],
+    syrniki: [
+      {part:'', text:'Творог (5% жирности), рисовая мука, яичные желтки, сахарозаменитель, соль.'}
+    ]
   });
+  var RICE_FLOUR_BLINI = new Set(['blini-savory', 'blini-tvorog']);
   var SEMIFINISHED = new Set(['pelmeni-chicken', 'pelmeni-beef', 'khinkali', 'vareniki', 'pepper']);
   function esc(v) {
     return String(v).replace(/[&<>"']/g, function (c) {
@@ -71,7 +101,7 @@
   }
   function detailHtml(p) {
     var photos = productPhotos(p);
-    var known = KNOWN_INGREDIENTS[p.id] || '';
+    var recipe = PRODUCT_RECIPES[p.id] || [];
     var gallery = photos.length > 1
       ? '<div class="pd-gallery-tabs" id="pdGalleryTabs" aria-label="Выбор фотографии товара">' + photos.map(function (f, i) {
           return '<button type="button" class="pd-photo-choice' + (i === 0 ? ' active' : '') + '" data-pd-photo="' + i + '" aria-pressed="' + (i === 0 ? 'true' : 'false') + '"><img src="' + esc(f.src) + '" alt="" loading="lazy"><span>' + esc(f.name) + '</span></button>';
@@ -80,9 +110,16 @@
     var missingPhoto = SEMIFINISHED.has(p.id) && photos.length === 1
       ? '<p class="pd-missing-photo">Фотографию полуфабриката в продаваемом виде добавим после съёмки.</p>'
       : '';
-    var ingredients = known
-      ? '<p class="pd-known"><span>Известные ингредиенты:</span> ' + esc(known) + '</p>'
-      : '<p class="pd-pending">Точный состав пока не предоставлен изготовителем.</p>';
+    var ingredients = recipe.length
+      ? '<div class="pd-recipe">' + recipe.map(function (group) {
+          return '<div class="pd-recipe-part">' +
+            (group.part ? '<strong class="pd-recipe-subheading">' + esc(group.part) + '</strong>' : '') +
+            '<p class="pd-recipe-ingredients">' + esc(group.text) + '</p></div>';
+        }).join('') +
+        (RICE_FLOUR_BLINI.has(p.id)
+          ? '<p class="pd-recipe-gluten">Тесто на рисовой муке, без пшеничной муки в рецептуре. Возможное наличие следов глютена ещё уточняется.</p>'
+          : '') + '</div>'
+      : '<p class="pd-pending">Состав пока не предоставлен изготовителем.</p>';
     return '<div class="pd-layout">' +
       '<section class="pd-gallery" aria-label="Фотографии товара">' +
       '<div class="pd-image-frame"><img id="pdActiveImage" src="' + esc(photos[0].src) + '" alt="' + esc(photos[0].alt) + '" width="1120" height="789"><span class="pd-image-label" id="pdImageLabel">' + esc(photos[0].name) + '</span></div>' +
@@ -92,7 +129,7 @@
       '<h2 id="productDetailTitle">' + esc(p.name) + '</h2>' +
       '<p class="pd-lead" id="productDetailLead">' + esc(p.description) + '</p>' +
       '<section class="pd-section" aria-labelledby="pdIngredientsHeading"><h3 id="pdIngredientsHeading">Состав</h3>' + ingredients +
-      '<p class="pd-muted">Полный перечень ингредиентов и сведения об аллергенах добавим после получения рецептуры производителя.</p></section>' +
+      '<p class="pd-muted pd-recipe-source">Состав по информации изготовителя. Возможные следы аллергенов уточняются.</p></section>' +
       '<section class="pd-section" aria-labelledby="pdNutritionHeading"><div class="pd-heading-row"><h3 id="pdNutritionHeading">КБЖУ на 100 г</h3><span class="pd-estimate">≈ предварительно</span></div>' + nutritionHtml(p) + '</section>' +
       '<section class="pd-section pd-order-note" aria-labelledby="pdFormatHeading"><h3 id="pdFormatHeading">Продажа и фасовка</h3><p>' + esc(purchaseInfo(p)) + '</p>' +
       (SEMIFINISHED.has(p.id) ? '<p class="pd-muted">Способ приготовления уточним после получения рекомендаций изготовителя.</p>' : '') + '</section>' +
