@@ -23,17 +23,17 @@ const GROUPS = Object.freeze([
   {id:'breakfast',name:'Завтраки и десерты',tab:'Завтраки и десерты'}
 ]);
 const PRODUCTS = Object.freeze([
- {id:'pelmeni-chicken',category:'dumplings',name:'Пельмени ПП с куриным филе и луком',description:'Цельнозерновое тесто · куриное филе и лук',price:1000,unit:'kg',badge:'Цельнозерновые',img:'assets/pelmeni-pp-approved-20261102b.webp'},
- {id:'pelmeni-beef',category:'dumplings',name:'Пельмени классические с говядиной',description:'Классический домашний вкус',price:850,unit:'kg',badge:'Домашние полуфабрикаты',img:'assets/pelmeni-beef-fullplate-20261101.webp'},
- {id:'khinkali',category:'dumplings',name:'Хинкали с говядиной',description:'Сочная начинка из говядины',price:850,unit:'kg',badge:'Домашние полуфабрикаты',img:'assets/khinkali-fullplate-20261101.webp'},
- {id:'borscht',category:'soups',name:'Борщ',description:'Домашний обед',price:200,unit:'piece',badge:'Супы',img:'assets/borscht-approved-20261102b.webp'},
- {id:'pea-soup',category:'soups',name:'Гороховый суп',description:'Сытный домашний суп',price:200,unit:'piece',badge:'Супы',img:'assets/pea-soup-fullplate-20261101.webp'},
- {id:'mushroom-soup',category:'soups',name:'Крем-суп с шампиньонами',description:'С нежным грибным вкусом',price:250,unit:'piece',badge:'Супы',img:'assets/mushroom-soup-fullplate-20261101.webp'},
- {id:'vareniki',category:'home',name:'Вареники с картофелем',description:'Любимая домашняя классика',price:400,unit:'kg',badge:'Домашние полуфабрикаты',img:'assets/vareniki-fullplate-20261101.webp'},
- {id:'pepper',category:'home',name:'Перец фаршированный',description:'Домашняя классика',price:850,unit:'kg',badge:'Домашняя классика',img:'assets/pepper-scale-borscht-20261102.webp'},
- {id:'syrniki',category:'breakfast',name:'Сырники готовые',description:'6 штук в наборе',price:400,unit:'pack6',badge:'6 штук',img:'assets/syrniki-fullplate-20261101.webp'},
- {id:'blini-tvorog',category:'breakfast',name:'Блинчики с творогом',description:'6 штук в наборе',price:450,unit:'pack6',badge:'6 штук',img:'assets/blini-tvorog-fullplate-20261101.webp'},
- {id:'blini-savory',category:'breakfast',name:'Блины с курицей, сыром и шпинатом',description:'Количество в порции уточняйте',price:500,unit:'piece',badge:'Новинка',img:'assets/blini-savory-fullplate-20261101.webp'}
+ {id:'pelmeni-chicken',category:'dumplings',name:'Пельмени ПП с куриным филе и луком',description:'Нежное цельнозерновое тесто, сочная куриная начинка и аромат лука — любимый вкус по-домашнему.',price:1000,unit:'kg',badge:'Цельнозерновые',img:'assets/pelmeni-pp-approved-20261102b.webp'},
+ {id:'pelmeni-beef',category:'dumplings',name:'Пельмени классические с говядиной',description:'Мягкое тонкое тесто, сочная говяжья начинка и тот самый насыщенный вкус настоящих домашних пельменей.',price:850,unit:'kg',badge:'Домашние полуфабрикаты',img:'assets/pelmeni-beef-fullplate-20261101.webp'},
+ {id:'khinkali',category:'dumplings',name:'Хинкали с говядиной',description:'Нежное тесто, ароматная говядина и горячий мясной сок внутри — удовольствие в каждом кусочке.',price:850,unit:'kg',badge:'Домашние полуфабрикаты',img:'assets/khinkali-fullplate-20261101.webp'},
+ {id:'borscht',category:'soups',name:'Борщ',description:'Насыщенный, ароматный, с нежными овощами и глубоким домашним вкусом. Настоящий уют в каждой ложке.',price:200,unit:'piece',badge:'Супы',img:'assets/borscht-approved-20261102b.webp'},
+ {id:'pea-soup',category:'soups',name:'Гороховый суп',description:'Густой, наваристый, с мягким горохом и богатым ароматом. Сытный обед, который согревает.',price:200,unit:'piece',badge:'Супы',img:'assets/pea-soup-fullplate-20261101.webp'},
+ {id:'mushroom-soup',category:'soups',name:'Крем-суп с шампиньонами',description:'Бархатистая текстура, насыщенный вкус шампиньонов и нежный грибной аромат. Лёгкий и уютный.',price:250,unit:'piece',badge:'Супы',img:'assets/mushroom-soup-fullplate-20261101.webp'},
+ {id:'vareniki',category:'home',name:'Вареники с картофелем',description:'Тонкое нежное тесто и мягкая картофельная начинка — тот самый знакомый вкус домашней кухни.',price:400,unit:'kg',badge:'Домашние полуфабрикаты',img:'assets/vareniki-fullplate-20261101.webp'},
+ {id:'pepper',category:'home',name:'Перец фаршированный',description:'Нежный сладковатый перец, сочная мясная начинка и насыщенный аромат — настоящая домашняя классика.',price:850,unit:'kg',badge:'Домашняя классика',img:'assets/pepper-scale-borscht-20261102.webp'},
+ {id:'syrniki',category:'breakfast',name:'Сырники готовые',description:'Румяная золотистая корочка, нежная творожная серединка — идеальное начало вкусного утра.',price:400,unit:'pack6',badge:'6 штук',img:'assets/syrniki-fullplate-20261101.webp'},
+ {id:'blini-tvorog',category:'breakfast',name:'Блинчики с творогом',description:'Тонкие, мягкие блинчики с нежной творожной начинкой — уютный домашний вкус в каждом кусочке.',price:450,unit:'pack6',badge:'6 штук',img:'assets/blini-tvorog-fullplate-20261101.webp'},
+ {id:'blini-savory',category:'breakfast',name:'Блины с курицей, сыром и шпинатом',description:'Румяные тонкие блинчики с сочной курицей, нежным сыром и шпинатом — сытно и невероятно вкусно.',price:500,unit:'piece',badge:'Новинка',img:'assets/blini-savory-fullplate-20261101.webp'}
 ]);
 // КБЖУ: временные ориентиры по усреднённым типовым рецептурам, на 100 г.
 // НЕ результаты лабораторного анализа и НЕ расчёт по фактическим технологическим картам производителя.
