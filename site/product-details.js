@@ -5,13 +5,13 @@
   'use strict';
   var SAMPLES = Object.freeze({
     'pelmeni-chicken': {
-      src: 'assets/pelmeni-wholegrain-raw-real-20261102.webp',
+      src: 'assets/pelmeni-wholegrain-raw-horizontal-20261102.webp',
       name: 'До приготовления',
       alt: 'Настоящие сырые цельнозерновые пельмени с куриным филе и луком на подносе',
       note: 'Настоящая фотография полуфабриката до приготовления.'
     },
     pepper: {
-      src: 'assets/pepper-raw-real-20261102.webp',
+      src: 'assets/pepper-raw-horizontal-20261102.webp',
       name: 'До приготовления',
       alt: 'Настоящие сырые фаршированные перцы с мясной начинкой до приготовления',
       note: 'Настоящая фотография полуфабриката до приготовления.'
